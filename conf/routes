@@ -1,0 +1,226 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Default path will just redirect to the computer list
+GET         /                                                           controllers.TestController.index()
++nocsrf
+GET         /v1/cp/category_path_name/                                  controllers.TestController.geneCategoryPathName()
+#GET         /v1/cp/gene_barcode/                                        controllers.TestController.geneBarcode()
++nocsrf
+#GET         /v1/cp/gene_relationship/                                   controllers.TestController.geneRelationship(page:Int?=1,size:Int?=100)
+#POST        /v1/cp/dada_call_backsudljowiejlk33423/                     controllers.TestController.dadaCallback(request:Request)
+
+#upload
++nocsrf
+POST        /v1/cp/upload/                                              controllers.basic.UploaderManager.upload(request: Request)
+POST        /v1/cp/upload2/                                             controllers.basic.UploaderManager.upload2(request: Request)
+POST        /v1/cp/upload_resize_qiniu/                                 controllers.basic.UploaderManager.uploadAndResize(request: Request)
+POST        /v1/cp/upload_base64/                                       controllers.basic.UploaderManager.uploadBase64(request: Request)
+#ADMIN MODULE
+GET         /v1/cp/groups/                                              controllers.basic.GroupController.listGroups()
+POST        /v1/cp/group/new/                                           controllers.basic.GroupController.addGroup(request: Request)
+POST        /v1/cp/group/                                               controllers.basic.GroupController.delGroup(request: Request)
+POST        /v1/cp/group/:id/                                           controllers.basic.GroupController.updateGroup(request: Request,id:Int)
+GET         /v1/cp/groups/:groupId/                                     controllers.basic.GroupController.getGroup(groupId:Int)
+
+POST        /v1/cp/request_sms/                                         controllers.basic.SmsController.requestVCode(request: Request)
++nocsrf
+POST        /v1/cp/request_user_vcode/                                  controllers.basic.SmsController.requestUserVCode(request:Request)
+
+
++nocsrf
+POST        /v1/cp/login/                                               controllers.basic.LoginController.login(request:Request)
++nocsrf
+GET         /v1/cp/is_login/                                            controllers.basic.LoginController.isLogin(request:Request)
+
++nocsrf
+POST        /v1/cp/admin_member_password/                               controllers.basic.LoginController.updatePassword(request:Request)
++nocsrf
+POST        /v1/cp/logout/                                              controllers.basic.LogoutController.logout(request:Request)
+
+GET         /v1/cp/actions/                                             controllers.basic.ActionController.listActions()
+POST        /v1/cp/action/new/                                          controllers.basic.ActionController.addAction(request: Request)
+POST        /v1/cp/action/:id/                                          controllers.basic.ActionController.updateAction(request: Request,id:String)
+POST        /v1/cp/action/                                              controllers.basic.ActionController.delAction(request: Request)
+GET         /v1/cp/action/:actionId/                                    controllers.basic.ActionController.getAction(actionId:String)
+GET         /v1/cp/actions_by_filter/:groupId/                          controllers.basic.ActionController.getGroupActionByGroupId(groupId:Int)
+
+GET         /v1/cp/admin_member/info/                                   controllers.basic.AdminMemberController.getAdminMemberInfo(request:Request)
+GET         /v1/cp/admin_members/                                       controllers.basic.AdminMemberController.listAdminMembers()
+POST        /v1/cp/admin_member/new/                                    controllers.basic.AdminMemberController.addAdminMember(request:Request)
+POST        /v1/cp/admin_member/:id/                                    controllers.basic.AdminMemberController.updateAdminMember(request:Request,id:Long)
+POST        /v1/cp/admin_member/                                        controllers.basic.AdminMemberController.delAdminMember(request:Request)
+GET         /v1/cp/admin_members/:memberId/                             controllers.basic.AdminMemberController.getAdminMember(memberId:Long)
+POST        /v1/cp/admin_members/status/                                controllers.basic.AdminMemberController.setAdminMemberStatus(request:Request)
+POST        /v1/cp/bind_member_to_group/                                controllers.basic.AdminMemberController.bindMemberToGroup(request:Request)
+GET         /v1/cp/user_groups/                                         controllers.basic.AdminMemberController.listUserGroups(request:Request,memberId:Long?=0)
+
+POST        /v1/cp/group_action/                                        controllers.basic.GroupActionController.updateGroupAction(request: Request)
+POST        /v1/cp/group_user/new/                                      controllers.basic.GroupUserController.addGroupUser(request: Request)
+POST        /v1/cp/group_user/                                          controllers.basic.GroupUserController.delGroupUser(request: Request)
+GET         /v1/cp/group_user/:groupId/                                 controllers.basic.GroupUserController.listUsersByGroupId(groupId:Int)
+
+GET         /v1/cp/menu/                                                controllers.basic.MenuManager.listMenu(name:String?="",parentId:Int?=0)
+GET         /v1/cp/menu/:id/                                            controllers.basic.MenuManager.getMenu(id:Int)
+POST        /v1/cp/menu/new/                                            controllers.basic.MenuManager.addMenu(request:Request)
+POST        /v1/cp/menu/:id/                                            controllers.basic.MenuManager.updateMenu(request:Request,id:Int)
+POST        /v1/cp/menu/                                                controllers.basic.MenuManager.deleteMenu(request:Request)
+POST        /v1/cp/batch_update_menu_to_group/:groupId/                 controllers.basic.MenuManager.batchUpdateGroupMenu(request: Request,groupId:Int)
+GET         /v1/cp/group_menu/                                          controllers.basic.MenuManager.listGroupMenu(groupId:Int)
+GET         /v1/cp/member_menu/                                         controllers.basic.MenuManager.getMemberMenu(request: Request)
+
+GET         /v1/cp/dict/                                                controllers.basic.DictManager.listDict(filter:String?="",parentId:Int?=0,parentName:String?="")
+GET         /v1/cp/dict/:id/                                            controllers.basic.DictManager.getDict(id:Long)
+POST        /v1/cp/dict/new/                                            controllers.basic.DictManager.addDict(request:Request)
+POST        /v1/cp/dict/:id/                                            controllers.basic.DictManager.updateDict(request:Request,id:Int)
+POST        /v1/cp/dict/                                                controllers.basic.DictManager.deleteDict(request:Request)
+
+GET         /v1/cp/user_dict_list/                                      controllers.basic.UserDictManager.listUserDict(request:Request,dictName:String?="",cateName:String?="",page:Int?=0)
+POST        /v1/cp/user_dict/new/                                       controllers.basic.UserDictManager.useDict(request:Request)
+POST        /v1/cp/user_dict/                                           controllers.basic.UserDictManager.deleteUserDict(request:Request)
+
+GET         /v1/cp/cache/refresh_admin_action/                          controllers.basic.CacheManager.refreshAdminAction()
+POST        /v1/cp/cache/set_maintenance/                               controllers.basic.CacheManager.setMaintenance()
+POST        /v1/cp/cache/cancel_maintenance/                            controllers.basic.CacheManager.cancelMaintenance()
+
+GET         /v1/cp/operation_logs/                                      controllers.basic.SystemManager.listOperationLog(page:Int?=1,adminName:String?="",adminId:Long?=0 )
+
+GET         /v1/cp/articles/                                            controllers.article.ArticleManager.listArticles(cateId:Int?=0,cateName:String?="",page:Int?=1)
+GET         /v1/cp/articles/:articleId/                                 controllers.article.ArticleManager.getArticle(articleId:Long)
+POST        /v1/cp/articles/new/                                        controllers.article.ArticleManager.addArticle(request: Request)
+POST        /v1/cp/articles/:id/                                        controllers.article.ArticleManager.updateArticle(request: Request,id:Long)
+POST        /v1/cp/article/                                             controllers.article.ArticleManager.delArticle(request: Request)
+
+GET         /v1/cp/article_categories/                                  controllers.article.ArticleManager.listCategories(page:Int?=1, categoryName:String?="")
+GET         /v1/cp/article_all_categories/                              controllers.article.ArticleManager.listAllCategories
+GET         /v1/cp/article_categories/:categoryId/                      controllers.article.ArticleManager.getCategory(categoryId:Int)
+POST        /v1/cp/article_categories/new/                              controllers.article.ArticleManager.addCategory(request: Request)
+POST        /v1/cp/article_categories/:categoryId/                      controllers.article.ArticleManager.updateCategory(request: Request,categoryId:Int)
+POST        /v1/cp/article_categories/                                  controllers.article.ArticleManager.delCategory(request: Request)
+POST        /v1/cp/push_msg/                                            controllers.article.ArticleManager.pushMsg(request: Request)
+
+GET         /v1/cp/carousels/                                           controllers.basic.SystemConfigManager.listCarousel(page:Int?=1,filter:String?="",queryType:Int?=0,bizType:Int?=0)
+GET         /v1/cp/carousels/:id/                                       controllers.basic.SystemConfigManager.getCarousel(id:Int)
+POST        /v1/cp/carousels/new/                                       controllers.basic.SystemConfigManager.addCarousel(request: Request)
+POST        /v1/cp/carousels/:id/                                       controllers.basic.SystemConfigManager.updateCarousel(request: Request,id:Int)
+POST        /v1/cp/carousels/                                           controllers.basic.SystemConfigManager.delCarousel(request: Request)
+
+GET         /v1/cp/friend_links/                                        controllers.basic.SystemConfigManager.listFriendLinks(page:Int?=1,filter:String?="")
+GET         /v1/cp/friend_links/:linkId/                                controllers.basic.SystemConfigManager.getFriendLink(linkId:Int)
+POST        /v1/cp/friend_links/new/                                    controllers.basic.SystemConfigManager.addFriendLink(request: Request)
+POST        /v1/cp/friend_links/:linkId/                                controllers.basic.SystemConfigManager.updateFriendLink(request: Request,linkId:Int)
+POST        /v1/cp/friend_links/                                        controllers.basic.SystemConfigManager.delFriendLink(request: Request)
+
+GET         /v1/cp/sms_template_list/                                   controllers.basic.SystemConfigManager.listSmsTemplate
+GET         /v1/cp/sms_template_list/:id/                               controllers.basic.SystemConfigManager.getSmsTemplate(id:Long)
+
+
+GET         /v1/cp/param_config/                                        controllers.basic.SystemManager.listParamConfig(page:Int?=1, key:String?="")
+GET         /v1/cp/param_config/:configId/                              controllers.basic.SystemManager.getParamConfig(configId:Int)
+POST        /v1/cp/param_config/new/                                    controllers.basic.SystemManager.addParamConfig(request: Request)
+POST        /v1/cp/param_config/:configId/                              controllers.basic.SystemManager.updateParamConfig(request: Request,configId:Int)
+POST        /v1/cp/param_config/                                        controllers.basic.SystemManager.delParamConfig(request: Request)
+
+POST        /v1/cp/members/                                             controllers.member.MemberManager.listMembers(request:Request)
+GET         /v1/cp/members/:uid/                                        controllers.member.MemberManager.getMember(request: Request,uid:Long)
+POST        /v1/cp/members/status/                                      controllers.member.MemberManager.setMemberStatus(request:Request)
+GET         /v1/cp/member_balance_log/                                  controllers.member.MemberManager.listUserBalanceLog(page:Int?=1,uid:Long?=0,queryType:Int?=0)
+
+GET         /v1/cp/search_key_word/                                     controllers.product.SearchManager.listSearchKeyWords
+POST        /v1/cp/search_key_word/new/                                 controllers.product.SearchManager.addSearchKeyWord(request:Request)
+POST        /v1/cp/search_key_word/                                     controllers.product.SearchManager.deleteSearchKeyWord(request:Request)
+
+GET         /v1/cp/reg_stat/                                            controllers.stat.StatManager.listReg(page:Int?=1)
+GET         /v1/cp/home_page_stat/                                      controllers.stat.StatManager.homepageStat(shopId:Long?=0)
+
+GET         /v1/cp/platform_day_stat/                                   controllers.stat.StatManager.listPlatformDayStat(day:String?="",page:Int?=1,beginDate:Long?=0,endDate:Long?=0,shopId:Long?=0)
+GET         /v1/cp/platform_month_stat/                                 controllers.stat.StatManager.listPlatformMonthStat(month:String?="",page:Int?=1,beginDate:Long?=0,endDate:Long?=0,shopId:Long?=0)
+GET         /v1/cp/platform_total_stat/                                 controllers.stat.StatManager.listTotalStat
+
+GET         /v1/cp/update_configs/                                      controllers.basic.UpdateManager.listUpdateConfigs(page:Int?=1)
+GET         /v1/cp/update_configs/:id/                                  controllers.basic.UpdateManager.getUpdateConfig(id:Int)
+POST        /v1/cp/update_config/new/                                   controllers.basic.UpdateManager.addUpdateConfig(request: Request)
+POST        /v1/cp/update_config/:id/                                   controllers.basic.UpdateManager.updateConfig(request: Request,id:Int)
+POST        /v1/cp/update_config/                                       controllers.basic.UpdateManager.delUpdateConfig(request: Request)
+
+GET         /v1/cp/grey_users/                                          controllers.basic.UpdateManager.listGreyUsers(page:Int?=1)
+GET         /v1/cp/grey_users/:id/                                      controllers.basic.UpdateManager.getGreyUser(id:Int)
+POST        /v1/cp/grey_users/new/                                      controllers.basic.UpdateManager.addGreyUser(request: Request)
+POST        /v1/cp/grey_users/                                          controllers.basic.UpdateManager.delGreyUser(request: Request)
+
+
+POST        /v1/cp/shops/                                               controllers.basic.ShopManager.listOrg(request: Request)
+GET         /v1/cp/shop/:id/                                            controllers.basic.ShopManager.getOrg(request: Request,id:Long)
+POST        /v1/cp/shop/new/                                            controllers.basic.ShopManager.addOrg(request: Request)
+POST        /v1/cp/shop/:id/                                            controllers.basic.ShopManager.updateOrg(request: Request,id:Long)
+POST        /v1/cp/shop/                                                controllers.basic.ShopManager.deleteOrg(request: Request)
+POST        /v1/cp/batch_update_org_member/:orgId/                      controllers.basic.ShopManager.batchUpdateOrgMember(request: Request,orgId:Long)
+GET         /v1/cp/shop_members/                                        controllers.basic.ShopManager.listOrgMembers(request: Request,orgId:Long?=0)
+POST        /v1/cp/bind_shop/                                           controllers.basic.ShopManager.bindShop(request: Request)
+
+GET         /v1/cp/shop_product_categories/                             controllers.basic.ShopManager.listShopProductCategories(filter:String?="",shopId:Long?=0,parentId:Long ?= -1)
+POST        /v1/cp/shop_product_categories/new/                         controllers.basic.ShopManager.addShopProductCategory(request:Request)
+POST        /v1/cp/shop_product_categories/:categoryId/                 controllers.basic.ShopManager.updateShopProductCategory(request:Request,categoryId:Long)
+POST        /v1/cp/shop_product_categories/                             controllers.basic.ShopManager.deleteShopProductCategory(request:Request)
+
+
+POST        /v1/cp/shop_profile_list/                                   controllers.shop.ShopProfileManager.listShopProfile(request:Request)
+GET         /v1/cp/shop_profile/:id/                                    controllers.shop.ShopProfileManager.getShopProfile(request:Request,id:Long)
+POST        /v1/cp/shop_auth_status/                                    controllers.shop.ShopProfileManager.handleShopAuth(request:Request)
+
+
+
+GET         /v1/cp/wechat_menu/                                         controllers.basic.WechatManager.getWechatMenu
+POST        /v1/cp/wechat_menu/                                         controllers.basic.WechatManager.createMenu(request:Request)
+
+GET         /ws_manager/                                                controllers.push.PushController.handleWS()
+
+GET         /v1/cp/product_categories/                                  controllers.category.CategoryManager.listProductCategories(filter:String?="",parentId:Long ?= -1,cateType:Int?=1)
+GET         /v1/cp/product_categories/:categoryId/                      controllers.category.CategoryManager.getProductCategory(categoryId:Long)
+POST        /v1/cp/product_categories/new/                              controllers.category.CategoryManager.addProductCategory(request:Request)
+POST        /v1/cp/product_categories/:categoryId/                      controllers.category.CategoryManager.updateProductCategory(request:Request,categoryId:Long)
+POST        /v1/cp/product_categories/                                  controllers.category.CategoryManager.deleteProductCategory(request:Request)
+
+GET         /v1/cp/poster/                                              controllers.poster.PosterManager.listPoster(beginTime:Long?=0,endTime:Long?=0)
+POST        /v1/cp/poster/new/                                          controllers.poster.PosterManager.addPoster(request: Request)
+POST        /v1/cp/poster/                                              controllers.poster.PosterManager.delPoster(request: Request)
+
+
+POST        /v1/cp/ad_list/                                             controllers.ad.AdManager.listAd(request: Request)
+POST        /v1/cp/ad/new/                                              controllers.ad.AdManager.addAd(request: Request)
+POST        /v1/cp/ad/:id/                                              controllers.ad.AdManager.updateAD(request: Request,id:Long)
+POST        /v1/cp/ad/                                                  controllers.ad.AdManager.delAd(request: Request)
+
+
+GET         /v1/cp/show_case_list/                                      controllers.product.ShowCaseManager.listShowCase(request:Request, shopId:Long?=0,page:Int?=1, title:String?="")
+GET         /v1/cp/show_case_list/:id/                                  controllers.product.ShowCaseManager.getShowCase(request:Request,id:Long)
+POST        /v1/cp/show_case/new/                                       controllers.product.ShowCaseManager.addShowCase(request:Request)
+POST        /v1/cp/show_case/:id/                                       controllers.product.ShowCaseManager.updateShowCase(request:Request,id:Long)
+POST        /v1/cp/show_case/                                           controllers.product.ShowCaseManager.deleteShowcase(request:Request)
+POST        /v1/cp/show_case_audit/:id/                                 controllers.product.ShowCaseManager.auditShowCase(request:Request,id:Long)
+
+GET         /v1/cp/new_shop_plan_list/                                  controllers.basic.NewShopPlanManager.listNewShopPlan(page:Int?=1,filter:String?="",clientType:Int?=0,bizType:Int?=0)
+GET         /v1/cp/new_shop_plan/:id/                                   controllers.basic.NewShopPlanManager.getShopPlan(id:Int)
+POST        /v1/cp/new_shop_plan/new/                                   controllers.basic.NewShopPlanManager.addNewShopPlan(request: Request)
+POST        /v1/cp/new_shop_plan/:id/                                   controllers.basic.NewShopPlanManager.updateShopPlan(request: Request,id:Int)
+POST        /v1/cp/new_shop_plan/                                       controllers.basic.NewShopPlanManager.delShopPlan(request: Request)
+
+
+GET         /v1/cp/new_shop_categories/                                 controllers.product.NewShopCategoryManager.listNewShopCategories(filter:String?="",parentId:Long ?= -1)
+GET         /v1/cp/new_shop_categories/:newShopCategoryId/              controllers.product.NewShopCategoryManager.getNewShopCategory(newShopCategoryId:Long)
+POST        /v1/cp/new_shop_categories/new/                             controllers.product.NewShopCategoryManager.addNewShopCategory(request:Request)
+POST        /v1/cp/new_shop_categories/:newShopCategoryId/              controllers.product.NewShopCategoryManager.updateNewShopCategory(request:Request,newShopCategoryId:Long)
+POST        /v1/cp/new_shop_categories/                                 controllers.product.NewShopCategoryManager.deleteNewShopCategory(request:Request)
+POST        /v1/cp/batch_update_new_shop_factory/                       controllers.product.NewShopCategoryManager.batchUpdateNewShopFactory(request:Request)
+
+GET         /v1/cp/new_shop_factories/                                  controllers.product.NewShopFactoryManager.listNewShopFactories(filter:String?="",parentId:Long ?= -1)
+GET         /v1/cp/new_shop_factories/:newShopFactoryId/                controllers.product.NewShopFactoryManager.getNewShopFactory(newShopFactoryId:Long)
+POST        /v1/cp/new_shop_factories/new/                              controllers.product.NewShopFactoryManager.addNewShopFactory(request:Request)
+POST        /v1/cp/new_shop_factories/:newShopFactoryId/                controllers.product.NewShopFactoryManager.updateNewShopFactory(request:Request,newShopFactoryId:Long)
+POST        /v1/cp/new_shop_factories/                                  controllers.product.NewShopFactoryManager.deleteNewShopFactory(request:Request)
+POST        /v1/cp/batch_update_new_shop_factory/                       controllers.product.NewShopFactoryManager.batchUpdateNewShopFactory(request:Request)
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /*file                                                      controllers.Assets.versioned(path="/public", file: Asset)
+
