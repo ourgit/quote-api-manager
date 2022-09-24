@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.BaseAdminSecurityController;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
-import models.category.Category;
+import models.post.Category;
 import play.Logger;
 import play.db.ebean.Transactional;
 import play.libs.Json;
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import static models.category.Category.CATE_TYPE_PLATFORM;
+import static models.post.Category.CATE_TYPE_POST;
 
 
 public class CategoryManager extends BaseAdminSecurityController {
@@ -33,7 +33,7 @@ public class CategoryManager extends BaseAdminSecurityController {
     Logger.ALogger logger = Logger.of(CategoryManager.class);
 
     /**
-     * @api {GET} /v1/cp/product_categories/?page=&filter=&parentId= 01商品分类列表
+     * @api {GET} /v1/cp/categories/?page=&filter=&parentId= 01分类列表
      * @apiName listCategories
      * @apiGroup ADMIN-CATEGORY
      * @apiSuccess (Success 200) {int} code 200 请求成功
@@ -48,7 +48,7 @@ public class CategoryManager extends BaseAdminSecurityController {
      * @apiSuccess (Success 200){JsonArray} children 子列表
      * @apiSuccess (Success 200){string} updateTime 更新时间
      */
-    public CompletionStage<Result> listProductCategories(final String filter, long parentId, int cateType) {
+    public CompletionStage<Result> listCategories(final String filter, long parentId, int cateType) {
         return CompletableFuture.supplyAsync(() -> {
             ExpressionList<Category> expressionList = Category.find.query().where();
             if (!ValidationUtil.isEmpty(filter)) expressionList.icontains("name", filter);
@@ -64,7 +64,7 @@ public class CategoryManager extends BaseAdminSecurityController {
     }
 
     /**
-     * @api {GET} /v1/cp/product_categories/:categoryId/ 02商品分类详情
+     * @api {GET} /v1/cp/categories/:categoryId/ 02分类详情
      * @apiName getCategory
      * @apiGroup ADMIN-CATEGORY
      * @apiSuccess (Success 200) {int} code 200 请求成功
@@ -76,7 +76,7 @@ public class CategoryManager extends BaseAdminSecurityController {
      * @apiSuccess (Success 200){JsonArray} children 子列表
      * @apiSuccess (Success 200){string} updateTime 更新时间
      */
-    public CompletionStage<Result> getProductCategory(long categoryId) {
+    public CompletionStage<Result> getCategory(long categoryId) {
         return CompletableFuture.supplyAsync(() -> {
             if (categoryId < 1) return okCustomJson(CODE40001, "参数错误");
             Category category = Category.find.byId(categoryId);
@@ -90,7 +90,7 @@ public class CategoryManager extends BaseAdminSecurityController {
     }
 
     /**
-     * @api {POST} /v1/cp/product_categories/new/ 03添加商品分类
+     * @api {POST} /v1/cp/categories/new/ 03添加分类
      * @apiName addCategory
      * @apiGroup ADMIN-CATEGORY
      * @apiParam {String} name 名称
@@ -103,7 +103,7 @@ public class CategoryManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> addProductCategory(Http.Request request) {
+    public CompletionStage<Result> addCategory(Http.Request request) {
         JsonNode requestNode = request.body().asJson();
         return CompletableFuture.supplyAsync(() -> {
             String name = requestNode.findPath("name").asText();
@@ -111,7 +111,7 @@ public class CategoryManager extends BaseAdminSecurityController {
             long parentId = requestNode.findPath("parentId").asLong();
             int sort = requestNode.findPath("sort").asInt();
             int cateType = requestNode.findPath("cateType").asInt();
-            if (cateType < 1) cateType = CATE_TYPE_PLATFORM;
+            if (cateType < 1) cateType = CATE_TYPE_POST;
             String imgUrl = requestNode.findPath("imgUrl").asText();
             String poster = requestNode.findPath("poster").asText();
             if (ValidationUtil.isEmpty(name)) return okCustomJson(CODE40001, "参数错误");
@@ -168,7 +168,7 @@ public class CategoryManager extends BaseAdminSecurityController {
     }
 
     /**
-     * @api {POST} /v1/cp/product_categories/:categoryId/ 04修改商品分类
+     * @api {POST} /v1/cp/categories/:categoryId/ 04修改分类
      * @apiName updateCategory
      * @apiGroup ADMIN-CATEGORY
      * @apiParam {String} name 名称
@@ -181,7 +181,7 @@ public class CategoryManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> updateProductCategory(Http.Request request, long categoryId) {
+    public CompletionStage<Result> updateCategory(Http.Request request, long categoryId) {
         JsonNode requestNode = request.body().asJson();
         return CompletableFuture.supplyAsync(() -> {
             if (categoryId < 1) return okCustomJson(CODE40001, "参数错误");
@@ -237,7 +237,7 @@ public class CategoryManager extends BaseAdminSecurityController {
     }
 
     /**
-     * @api {POST} /v1/cp/product_categories/ 05删除商品分类
+     * @api {POST} /v1/cp/categories/ 05删除分类
      * @apiName deleteCategory
      * @apiGroup ADMIN-CATEGORY
      * @apiParam {int} categoryId 商品分类id
@@ -249,7 +249,7 @@ public class CategoryManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> deleteProductCategory(Http.Request request) {
+    public CompletionStage<Result> deleteCategory(Http.Request request) {
         JsonNode jsonNode = request.body().asJson();
         String operation = jsonNode.findPath("operation").asText();
         return CompletableFuture.supplyAsync(() -> {

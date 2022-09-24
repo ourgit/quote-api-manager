@@ -1,4 +1,4 @@
-package models.category;
+package models.post;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.ebean.Finder;
@@ -18,7 +18,7 @@ public class Category extends Model {
     public static final int SHOW_CATEGORY = 1;
     public static final int HIDE_CATEGORY = 2;
 
-    public static final int CATE_TYPE_PLATFORM = 1;
+    public static final int CATE_TYPE_POST = 1;
     public static final int CATE_TYPE_SCORE = 2;
     @Column(name = "id")
     @Id
@@ -63,6 +63,9 @@ public class Category extends Model {
 
     @Column(name = "sold_amount")
     public long soldAmount;
+
+    @Column(name = "posts")
+    public long posts;
 
     @Column(name = "create_time")
     public long createTime;
@@ -184,21 +187,11 @@ public class Category extends Model {
         this.pathName = pathName;
     }
 
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", parentId=" + parentId +
-                ", name='" + name + '\'' +
-                ", imgUrl='" + imgUrl + '\'' +
-                ", poster='" + poster + '\'' +
-                ", path='" + path + '\'' +
-                ", pinyinAbbr='" + pinyinAbbr + '\'' +
-                ", show=" + show +
-                ", sort=" + sort +
-                ", soldAmount=" + soldAmount +
-                ", createTime=" + createTime +
-                ", children=" + children +
-                '}';
+    public long getPosts() {
+        return posts;
+    }
+
+    public void setPosts(long posts) {
+        this.posts = posts;
     }
 }

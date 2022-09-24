@@ -9,7 +9,7 @@ import io.ebean.DB;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import models.admin.AdminMember;
-import models.category.Category;
+import models.post.Category;
 import models.product.NewShopCategory;
 import models.shop.Shop;
 import models.shop.ShopProductCategory;

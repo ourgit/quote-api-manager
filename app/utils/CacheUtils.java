@@ -2,7 +2,7 @@ package utils;
 
 import constants.BusinessConstant;
 import constants.RedisKeyConstant;
-import models.category.Category;
+import models.post.Category;
 import models.system.ParamConfig;
 import play.Logger;
 import play.cache.AsyncCacheApi;
@@ -195,7 +195,7 @@ public class CacheUtils {
     }
 
     private void clearHomepageJsonCache() {
-        String categoryJsonCachePlatform = getCategoryJsonCache(Category.CATE_TYPE_PLATFORM);
+        String categoryJsonCachePlatform = getCategoryJsonCache(Category.CATE_TYPE_POST);
         redis.remove(categoryJsonCachePlatform);
         String categoryJsonCacheScore = getCategoryJsonCache(Category.CATE_TYPE_SCORE);
         redis.remove(categoryJsonCacheScore);
