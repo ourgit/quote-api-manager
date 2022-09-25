@@ -114,6 +114,8 @@ public class CategoryManager extends BaseAdminSecurityController {
             if (cateType < 1) cateType = CATE_TYPE_POST;
             String imgUrl = requestNode.findPath("imgUrl").asText();
             String poster = requestNode.findPath("poster").asText();
+            String seoKeyword = requestNode.findPath("seoKeyword").asText();
+            String seoDescription = requestNode.findPath("seoDescription").asText();
             if (ValidationUtil.isEmpty(name)) return okCustomJson(CODE40001, "参数错误");
             Category parentMerchantCategory = null;
             if (parentId > 0) {
@@ -128,6 +130,8 @@ public class CategoryManager extends BaseAdminSecurityController {
             category.setSort(sort);
             category.setCateType(cateType);
             category.setParentId(parentId);
+            category.setSeoKeyword(seoKeyword);
+            category.setSeoDescription(seoDescription);
             category.setPoster(poster);
             if (null != parentMerchantCategory) {
                 String parentPath = parentMerchantCategory.path;
@@ -213,7 +217,11 @@ public class CategoryManager extends BaseAdminSecurityController {
             String imgUrl = requestNode.findPath("imgUrl").asText();
             if (!ValidationUtil.isEmpty(imgUrl)) category.setImgUrl(imgUrl);
             String poster = requestNode.findPath("poster").asText();
+            String seoKeyword = requestNode.findPath("seoKeyword").asText();
+            String seoDescription = requestNode.findPath("seoDescription").asText();
             if (!ValidationUtil.isEmpty(poster)) category.setPoster(poster);
+            if (!ValidationUtil.isEmpty(seoKeyword)) category.setSeoKeyword(seoKeyword);
+            if (!ValidationUtil.isEmpty(seoDescription)) category.setSeoDescription(seoDescription);
             if (cateType > 0) category.setCateType(cateType);
             category.setPathName(getPathName(category.path));
             category.save();

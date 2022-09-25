@@ -52,6 +52,14 @@ public class Category extends Model {
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
     public String pinyinAbbr;
 
+    @Column(name = "seo_keyword")
+    @JsonDeserialize(using = EscapeHtmlSerializer.class)
+    public String seoKeyword;
+
+    @Column(name = "seo_description")
+    @JsonDeserialize(using = EscapeHtmlSerializer.class)
+    public String seoDescription;
+
     @Column(name = "is_shown")
     public int show;
 
@@ -193,5 +201,21 @@ public class Category extends Model {
 
     public void setPosts(long posts) {
         this.posts = posts;
+    }
+
+    public String getSeoKeyword() {
+        return seoKeyword;
+    }
+
+    public void setSeoKeyword(String seoKeyword) {
+        this.seoKeyword = seoKeyword;
+    }
+
+    public String getSeoDescription() {
+        return seoDescription;
+    }
+
+    public void setSeoDescription(String seoDescription) {
+        this.seoDescription = seoDescription;
     }
 }

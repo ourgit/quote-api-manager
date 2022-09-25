@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import static models.system.ParamConfig.SOURCE_FRONTEND;
+
 /**
  * 统计管理
  */
@@ -45,7 +47,9 @@ public class SystemManager extends BaseAdminSecurityController {
         if (page < 1) page = 1;
         final int queryPage = page - 1;
         return CompletableFuture.supplyAsync(() -> {
-            ExpressionList<ParamConfig> expressionList = ParamConfig.find.query().where().eq("enable", true);
+            ExpressionList<ParamConfig> expressionList = ParamConfig.find.query().where()
+                    .eq("enable", true)
+                    .eq("source", SOURCE_FRONTEND);
             if (!ValidationUtil.isEmpty(key)) expressionList.icontains("key", key);
             PagedList<ParamConfig> pagedList = expressionList.orderBy().desc("id").orderBy().asc("key")
                     .setFirstRow(queryPage * BusinessConstant.PAGE_SIZE_20)
@@ -79,6 +83,7 @@ public class SystemManager extends BaseAdminSecurityController {
             if (configId < 1) return okCustomJson(CODE40001, "参数错误");
             ParamConfig config = ParamConfig.find.query().where().eq("id", configId)
                     .eq("enable", true)
+                    .eq("source", SOURCE_FRONTEND)
                     .setMaxRows(1)
                     .findOne();
             if (null == config) return okCustomJson(CODE40002, "找不到该配置");
@@ -116,6 +121,7 @@ public class SystemManager extends BaseAdminSecurityController {
             ParamConfig config = ParamConfig.find.query().where().eq("key", param.key).setMaxRows(1).findOne();
             if (null != config) return okCustomJson(CODE40003, "该配置的KEY已存在");
             param.setUpdateTime(dateUtils.getCurrentTimeBySecond());
+            param.setSource(SOURCE_FRONTEND);
             param.setEnable(true);
             param.save();
             businessUtils.addOperationLog(request, admin, "增加系统参数配置：" + param.toString());
@@ -161,6 +167,7 @@ public class SystemManager extends BaseAdminSecurityController {
             }
             if (!ValidationUtil.isEmpty(param.value)) config.setValue(param.value);
             if (!ValidationUtil.isEmpty(param.note)) config.setNote(param.note);
+            if (param.contentType > 0) config.setContentType(param.contentType);
             config.setUpdateTime(dateUtils.getCurrentTimeBySecond());
             config.save();
             updateParamConfigCache();
@@ -198,6 +205,7 @@ public class SystemManager extends BaseAdminSecurityController {
             return okJSON200();
         });
     }
+
     /**
      * @api {GET} /v1/cp/operation_logs/?page=&key= 06操作日志
      * @apiName listOperationLog

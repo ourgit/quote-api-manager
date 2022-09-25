@@ -14,6 +14,16 @@ import java.io.Serializable;
 @Entity
 @Table(name = "v1_system_config")
 public class ParamConfig extends Model implements Serializable {
+    public static final int SOURCE_FRONTEND = 1;
+    public static final int SOURCE_BACKEND = 2;
+
+    public static final int CONTENT_TYPE_TEXT = 1;
+    public static final int CONTENT_TYPE_IMAGE = 2;
+    public static final int CONTENT_TYPE_COLOR = 3;
+    public static final int CONTENT_TYPE_SWITCH = 4;
+    public static final int CONTENT_TYPE_JSON = 5;
+
+
     private static final long serialVersionUID = 1885841224604019893L;
     @Column(name = "id")
     @Id
@@ -34,6 +44,12 @@ public class ParamConfig extends Model implements Serializable {
 
     @Column(name = "enable")
     public boolean enable;
+
+    @Column(name = "source")
+    public int source;
+
+    @Column(name = "content_type")
+    public int contentType;
 
     @Column(name = "is_encrypt")
     public boolean isEncrypt;
@@ -99,15 +115,19 @@ public class ParamConfig extends Model implements Serializable {
         isEncrypt = encrypt;
     }
 
-    @Override
-    public String toString() {
-        return "ParamConfig{" +
-                "id=" + id +
-                ", key='" + key + '\'' +
-                ", value='" + value + '\'' +
-                ", note='" + note + '\'' +
-                ", enable=" + enable +
-                ", updateTime=" + updateTime +
-                '}';
+    public int getSource() {
+        return source;
+    }
+
+    public void setSource(int source) {
+        this.source = source;
+    }
+
+    public int getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(int contentType) {
+        this.contentType = contentType;
     }
 }
