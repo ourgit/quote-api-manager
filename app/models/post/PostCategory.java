@@ -12,8 +12,8 @@ import java.util.List;
  * 商品分类
  */
 @Entity
-@Table(name = "v1_category")
-public class Category extends Model {
+@Table(name = "v1_post_category")
+public class PostCategory extends Model {
 
     public static final int SHOW_CATEGORY = 1;
     public static final int HIDE_CATEGORY = 2;
@@ -79,9 +79,9 @@ public class Category extends Model {
     public long createTime;
 
     @Transient
-    public List<Category> children;
+    public List<PostCategory> children;
 
-    public static Finder<Long, Category> find = new Finder<>(Category.class);
+    public static Finder<Long, PostCategory> find = new Finder<>(PostCategory.class);
 
     public void setId(long id) {
         this.id = id;
@@ -163,11 +163,11 @@ public class Category extends Model {
         return createTime;
     }
 
-    public List<Category> getChildren() {
+    public List<PostCategory> getChildren() {
         return children;
     }
 
-    public void setChildren(List<Category> children) {
+    public void setChildren(List<PostCategory> children) {
         this.children = children;
     }
 

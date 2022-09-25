@@ -3,11 +3,12 @@ package utils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import constants.BusinessConstant;
 import constants.RedisKeyConstant;
+import models.Category.Category;
 import models.admin.AdminMember;
 import models.admin.Group;
 import models.admin.GroupUser;
 import models.log.SmsLog;
-import models.post.Category;
+import models.post.PostCategory;
 import models.product.NewShopCategory;
 import models.shop.NewShopFactory;
 import models.system.ParamConfig;
@@ -222,12 +223,33 @@ public class BizUtils {
         return Optional.of(adminMember);
     }
 
-    public List<Category> convertListToTreeNode(List<Category> categoryList) {
+    public List<Category> convertCategory(List<Category> postCategoryList) {
         List<Category> nodeList = new ArrayList<>();
-        if (null == categoryList) return nodeList;
-        for (Category node1 : categoryList) {
+        if (null == postCategoryList) return nodeList;
+        for (Category node1 : postCategoryList) {
             boolean mark = false;
-            for (Category node2 : categoryList) {
+            for (Category node2 : postCategoryList) {
+                if (node1.parentId == node2.id) {
+                    mark = true;
+                    if (node2.children == null)
+                        node2.children = new ArrayList<>();
+                    node2.children.add(node1);
+                    break;
+                }
+            }
+            if (!mark) {
+                nodeList.add(node1);
+            }
+        }
+        return nodeList;
+    }
+
+    public List<PostCategory> convertPostCategoryList(List<PostCategory> postCategoryList) {
+        List<PostCategory> nodeList = new ArrayList<>();
+        if (null == postCategoryList) return nodeList;
+        for (PostCategory node1 : postCategoryList) {
+            boolean mark = false;
+            for (PostCategory node2 : postCategoryList) {
                 if (node1.parentId == node2.id) {
                     mark = true;
                     if (node2.children == null)
@@ -296,6 +318,7 @@ public class BizUtils {
         }
         return true;
     }
+
     public void unLock(String uid, String operationType) {
         redis.remove(operationType + ":" + uid);
     }
@@ -315,7 +338,6 @@ public class BizUtils {
         String recommendJsonCache = ARTICLE_RECOMMEND_JSON_CACHE;
         redis.remove(recommendJsonCache);
     }
-
 
 
     public Member getMember(long uid) {

@@ -9,7 +9,7 @@ import io.ebean.DB;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import models.admin.AdminMember;
-import models.post.Category;
+import models.post.PostCategory;
 import models.product.NewShopCategory;
 import models.shop.Shop;
 import models.shop.ShopProductCategory;
@@ -704,10 +704,10 @@ public class ShopManager extends BaseAdminController {
             }
             if (show > 0) {
                 category.setShow(show);
-                if (show == Category.HIDE_CATEGORY) {
+                if (show == PostCategory.HIDE_CATEGORY) {
                     List<ShopProductCategory> list = ShopProductCategory.find.query().where().icontains("path", "/" + category.id + "/").findList();
                     list.parallelStream().forEach((each) -> {
-                        each.setShow(Category.HIDE_CATEGORY);
+                        each.setShow(PostCategory.HIDE_CATEGORY);
                     });
                     DB.saveAll(list);
                 }

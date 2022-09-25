@@ -2,7 +2,7 @@ package utils;
 
 import constants.BusinessConstant;
 import constants.RedisKeyConstant;
-import models.post.Category;
+import models.post.PostCategory;
 import models.system.ParamConfig;
 import play.Logger;
 import play.cache.AsyncCacheApi;
@@ -195,9 +195,9 @@ public class CacheUtils {
     }
 
     private void clearHomepageJsonCache() {
-        String categoryJsonCachePlatform = getCategoryJsonCache(Category.CATE_TYPE_POST);
+        String categoryJsonCachePlatform = getCategoryJsonCache(PostCategory.CATE_TYPE_POST);
         redis.remove(categoryJsonCachePlatform);
-        String categoryJsonCacheScore = getCategoryJsonCache(Category.CATE_TYPE_SCORE);
+        String categoryJsonCacheScore = getCategoryJsonCache(PostCategory.CATE_TYPE_SCORE);
         redis.remove(categoryJsonCacheScore);
         String key = homepageBrandJsonCache();
         redis.remove(key);
@@ -247,7 +247,7 @@ public class CacheUtils {
 
     public void updateMerchantCategoryCache() {
 
-        List<Category> list = Category.find.query().where().orderBy().desc("id").findList();
+        List<PostCategory> list = PostCategory.find.query().where().orderBy().desc("id").findList();
         list.forEach((each) -> {
             String key = getCategoryPrefix(each.id);
             redis.set(key, each);

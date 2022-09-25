@@ -182,6 +182,12 @@ POST        /v1/cp/categories/new/                                controllers.ca
 POST        /v1/cp/categories/:categoryId/                        controllers.category.CategoryManager.updateCategory(request:Request,categoryId:Long)
 POST        /v1/cp/categories/                                    controllers.category.CategoryManager.deleteCategory(request:Request)
 
+GET         /v1/cp/post_categories/                               controllers.post.PostCategoryManager.listPostCategories(filter:String?="",parentId:Long ?= -1,cateType:Int?=1)
+GET         /v1/cp/post_categories/:categoryId/                   controllers.post.PostCategoryManager.getPostCategory(categoryId:Long)
+POST        /v1/cp/post_categories/new/                           controllers.post.PostCategoryManager.addPostCategory(request:Request)
+POST        /v1/cp/post_categories/:categoryId/                   controllers.post.PostCategoryManager.updatePostCategory(request:Request,categoryId:Long)
+POST        /v1/cp/post_categories/                               controllers.post.PostCategoryManager.deletePostCategory(request:Request)
+
 GET         /v1/cp/poster/                                        controllers.poster.PosterManager.listPoster(beginTime:Long?=0,endTime:Long?=0)
 POST        /v1/cp/poster/new/                                    controllers.poster.PosterManager.addPoster(request: Request)
 POST        /v1/cp/poster/                                        controllers.poster.PosterManager.delPoster(request: Request)

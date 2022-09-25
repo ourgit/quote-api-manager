@@ -1,11 +1,11 @@
-package controllers.category;
+package controllers.post;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.BaseAdminSecurityController;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
-import models.Category.Category;
+import models.post.PostCategory;
 import play.Logger;
 import play.db.ebean.Transactional;
 import play.libs.Json;
@@ -23,17 +23,19 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import static models.post.PostCategory.CATE_TYPE_POST;
 
-public class CategoryManager extends BaseAdminSecurityController {
+
+public class PostCategoryManager extends BaseAdminSecurityController {
     @Inject
     Pinyin4j pinyin4j;
 
-    Logger.ALogger logger = Logger.of(CategoryManager.class);
+    Logger.ALogger logger = Logger.of(PostCategoryManager.class);
 
     /**
-     * @api {GET} /v1/cp/categories/?page=&filter=&parentId= 01分类列表
-     * @apiName listCategories
-     * @apiGroup ADMIN-CATEGORY
+     * @api {GET} /v1/cp/post_categories/?page=&filter=&parentId= 01贴子分类列表
+     * @apiName listPostCategories
+     * @apiGroup ADMIN-POST-CATEGORY
      * @apiSuccess (Success 200) {int} code 200 请求成功
      * @apiSuccess (Success 200) {int} pages 页数
      * @apiSuccess (Success 200) {JsonArray} list 列表
@@ -46,25 +48,25 @@ public class CategoryManager extends BaseAdminSecurityController {
      * @apiSuccess (Success 200){JsonArray} children 子列表
      * @apiSuccess (Success 200){string} updateTime 更新时间
      */
-    public CompletionStage<Result> listCategories(final String filter, long parentId, int cateType) {
+    public CompletionStage<Result> listPostCategories(final String filter, long parentId, int cateType) {
         return CompletableFuture.supplyAsync(() -> {
-            ExpressionList<Category> expressionList = Category.find.query().where();
+            ExpressionList<PostCategory> expressionList = PostCategory.find.query().where();
             if (!ValidationUtil.isEmpty(filter)) expressionList.icontains("name", filter);
             if (parentId >= 0) expressionList.eq("parentId", parentId);
             if (cateType > 0) expressionList.eq("cateType", cateType);
-            List<Category> list = expressionList.orderBy().desc("sort").findList();
+            List<PostCategory> list = expressionList.orderBy().desc("sort").findList();
             ObjectNode result = Json.newObject();
             result.put(CODE, CODE200);
-            List<Category> resultList = businessUtils.convertCategory(list);
+            List<PostCategory> resultList = businessUtils.convertPostCategoryList(list);
             result.set("list", Json.toJson(resultList));
             return ok(result);
         });
     }
 
     /**
-     * @api {GET} /v1/cp/categories/:categoryId/ 02分类详情
-     * @apiName getCategory
-     * @apiGroup ADMIN-CATEGORY
+     * @api {GET} /v1/cp/post_categories/:categoryId/ 02贴子分类详情
+     * @apiName getPostCategory
+     * @apiGroup ADMIN-POST-CATEGORY
      * @apiSuccess (Success 200) {int} code 200 请求成功
      * @apiSuccess (Success 200){long} id 分类id
      * @apiSuccess (Success 200){String} name 名称
@@ -74,23 +76,23 @@ public class CategoryManager extends BaseAdminSecurityController {
      * @apiSuccess (Success 200){JsonArray} children 子列表
      * @apiSuccess (Success 200){string} updateTime 更新时间
      */
-    public CompletionStage<Result> getCategory(long categoryId) {
+    public CompletionStage<Result> getPostCategory(long categoryId) {
         return CompletableFuture.supplyAsync(() -> {
             if (categoryId < 1) return okCustomJson(CODE40001, "参数错误");
-            Category category = Category.find.byId(categoryId);
-            if (null == category) return okCustomJson(CODE40002, "该商品分类不存在");
-            List<Category> children = Category.find.query().where().eq("parentId", categoryId).findList();
-            category.children = children;
-            ObjectNode result = (ObjectNode) Json.toJson(category);
+            PostCategory postCategory = PostCategory.find.byId(categoryId);
+            if (null == postCategory) return okCustomJson(CODE40002, "该商品分类不存在");
+            List<PostCategory> children = PostCategory.find.query().where().eq("parentId", categoryId).findList();
+            postCategory.children = children;
+            ObjectNode result = (ObjectNode) Json.toJson(postCategory);
             result.put(CODE, CODE200);
             return ok(result);
         });
     }
 
     /**
-     * @api {POST} /v1/cp/categories/new/ 03添加分类
-     * @apiName addCategory
-     * @apiGroup ADMIN-CATEGORY
+     * @api {POST} /v1/cp/post_categories/new/ 03添加贴子分类
+     * @apiName addPostCategory
+     * @apiGroup ADMIN-POST-CATEGORY
      * @apiParam {String} name 名称
      * @apiParam {String} imgUrl 图片地址
      * @apiParam {String} poster 海报图片地址
@@ -101,7 +103,7 @@ public class CategoryManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> addCategory(Http.Request request) {
+    public CompletionStage<Result> addPostCategory(Http.Request request) {
         JsonNode requestNode = request.body().asJson();
         return CompletableFuture.supplyAsync(() -> {
             String name = requestNode.findPath("name").asText();
@@ -109,45 +111,46 @@ public class CategoryManager extends BaseAdminSecurityController {
             long parentId = requestNode.findPath("parentId").asLong();
             int sort = requestNode.findPath("sort").asInt();
             int cateType = requestNode.findPath("cateType").asInt();
+            if (cateType < 1) cateType = CATE_TYPE_POST;
             String imgUrl = requestNode.findPath("imgUrl").asText();
             String poster = requestNode.findPath("poster").asText();
             String seoKeyword = requestNode.findPath("seoKeyword").asText();
             String seoDescription = requestNode.findPath("seoDescription").asText();
             if (ValidationUtil.isEmpty(name)) return okCustomJson(CODE40001, "参数错误");
-            Category parentMerchantCategory = null;
+            PostCategory parentMerchantPostCategory = null;
             if (parentId > 0) {
-                parentMerchantCategory = Category.find.byId(parentId);
-                if (null == parentMerchantCategory) return okCustomJson(CODE40001, "父类ID不存在");
+                parentMerchantPostCategory = PostCategory.find.byId(parentId);
+                if (null == parentMerchantPostCategory) return okCustomJson(CODE40001, "父类ID不存在");
             }
             if (show < 1) show = 1;
-            Category Category = new Category();
-            Category.setName(name);
-            Category.setPinyinAbbr(pinyin4j.toPinYinUppercase(name));
-            Category.setShow(show);
-            Category.setSort(sort);
-            Category.setCateType(cateType);
-            Category.setParentId(parentId);
-            Category.setSeoKeyword(seoKeyword);
-            Category.setSeoDescription(seoDescription);
-            Category.setPoster(poster);
-            if (null != parentMerchantCategory) {
-                String parentPath = parentMerchantCategory.path;
+            PostCategory postCategory = new PostCategory();
+            postCategory.setName(name);
+            postCategory.setPinyinAbbr(pinyin4j.toPinYinUppercase(name));
+            postCategory.setShow(show);
+            postCategory.setSort(sort);
+            postCategory.setCateType(cateType);
+            postCategory.setParentId(parentId);
+            postCategory.setSeoKeyword(seoKeyword);
+            postCategory.setSeoDescription(seoDescription);
+            postCategory.setPoster(poster);
+            if (null != parentMerchantPostCategory) {
+                String parentPath = parentMerchantPostCategory.path;
                 if (ValidationUtil.isEmpty(parentPath)) parentPath = "/";
-                Category.setPath(parentPath + parentMerchantCategory.id + "/");
-            } else Category.setPath("/");
+                postCategory.setPath(parentPath + parentMerchantPostCategory.id + "/");
+            } else postCategory.setPath("/");
 
             long currentTime = dateUtils.getCurrentTimeBySecond();
-            Category.setCreateTime(currentTime);
-            if (!ValidationUtil.isEmpty(imgUrl)) Category.setImgUrl(imgUrl);
-            Category.setPathName(getPathName(Category.path));
-            Category.save();
+            postCategory.setCreateTime(currentTime);
+            if (!ValidationUtil.isEmpty(imgUrl)) postCategory.setImgUrl(imgUrl);
+            postCategory.setPathName(getPathName(postCategory.path));
+            postCategory.save();
             updateCategoryCache();
             return okJSON200();
         });
     }
 
     private String getPathName(String path) {
-        List<Category> list = Category.find.all();
+        List<PostCategory> list = PostCategory.find.all();
         Map<Long, String> map = new HashMap<>();
         list.parallelStream().forEach((each) -> {
             map.put(each.id, each.name);
@@ -169,9 +172,9 @@ public class CategoryManager extends BaseAdminSecurityController {
     }
 
     /**
-     * @api {POST} /v1/cp/categories/:categoryId/ 04修改分类
-     * @apiName updateCategory
-     * @apiGroup ADMIN-CATEGORY
+     * @api {POST} /v1/cp/post_categories/:categoryId/ 04修改贴子分类
+     * @apiName updatePostCategory
+     * @apiGroup ADMIN-POST-CATEGORY
      * @apiParam {String} name 名称
      * @apiParam {String} imgUrl 图片地址
      * @apiParam {String} poster 海报地址
@@ -182,12 +185,12 @@ public class CategoryManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> updateCategory(Http.Request request, long categoryId) {
+    public CompletionStage<Result> updatePostCategory(Http.Request request, long categoryId) {
         JsonNode requestNode = request.body().asJson();
         return CompletableFuture.supplyAsync(() -> {
             if (categoryId < 1) return okCustomJson(CODE40001, "参数错误");
-            Category category = Category.find.byId(categoryId);
-            if (null == category) return okCustomJson(CODE40002, "该商品分类不存在");
+            PostCategory postCategory = PostCategory.find.byId(categoryId);
+            if (null == postCategory) return okCustomJson(CODE40002, "该商品分类不存在");
             long parentId = requestNode.findPath("parentId").asLong();
             if (categoryId == parentId) return okCustomJson(CODE40002, "子分类不能跟父分类一样");
             String name = requestNode.findPath("name").asText();
@@ -196,55 +199,55 @@ public class CategoryManager extends BaseAdminSecurityController {
             int show = requestNode.findPath("show").asInt();
             int sort = requestNode.findPath("sort").asInt();
             if (!ValidationUtil.isEmpty(name)) {
-                category.setName(name);
-                category.setPinyinAbbr(pinyin4j.toPinYinUppercase(name));
+                postCategory.setName(name);
+                postCategory.setPinyinAbbr(pinyin4j.toPinYinUppercase(name));
             }
             if (show > 0) {
-                category.setShow(show);
-                if (show == Category.HIDE_CATEGORY) {
-                    List<Category> list = Category.find.query().where().icontains("path", "/" + category.id + "/").findList();
+                postCategory.setShow(show);
+                if (show == PostCategory.HIDE_CATEGORY) {
+                    List<PostCategory> list = PostCategory.find.query().where().icontains("path", "/" + postCategory.id + "/").findList();
                     list.parallelStream().forEach((each) -> {
-                        each.setShow(Category.HIDE_CATEGORY);
+                        each.setShow(PostCategory.HIDE_CATEGORY);
                     });
                     DB.saveAll(list);
                 }
             }
-            if (sort > 0) category.setSort(sort);
-            setCategory(category, parentId);
+            if (sort > 0) postCategory.setSort(sort);
+            setCategory(postCategory, parentId);
             String imgUrl = requestNode.findPath("imgUrl").asText();
-            if (!ValidationUtil.isEmpty(imgUrl)) category.setImgUrl(imgUrl);
+            if (!ValidationUtil.isEmpty(imgUrl)) postCategory.setImgUrl(imgUrl);
             String poster = requestNode.findPath("poster").asText();
             String seoKeyword = requestNode.findPath("seoKeyword").asText();
             String seoDescription = requestNode.findPath("seoDescription").asText();
-            if (!ValidationUtil.isEmpty(poster)) category.setPoster(poster);
-            if (!ValidationUtil.isEmpty(seoKeyword)) category.setSeoKeyword(seoKeyword);
-            if (!ValidationUtil.isEmpty(seoDescription)) category.setSeoDescription(seoDescription);
-            if (cateType > 0) category.setCateType(cateType);
-            category.setPathName(getPathName(category.path));
-            category.save();
+            if (!ValidationUtil.isEmpty(poster)) postCategory.setPoster(poster);
+            if (!ValidationUtil.isEmpty(seoKeyword)) postCategory.setSeoKeyword(seoKeyword);
+            if (!ValidationUtil.isEmpty(seoDescription)) postCategory.setSeoDescription(seoDescription);
+            if (cateType > 0) postCategory.setCateType(cateType);
+            postCategory.setPathName(getPathName(postCategory.path));
+            postCategory.save();
             updateCategoryCache();
             return okJSON200();
         });
     }
 
-    private void setCategory(Category Category, long parentId) {
+    private void setCategory(PostCategory postCategory, long parentId) {
         if (parentId > -1) {
-            Category.setParentId(parentId);
+            postCategory.setParentId(parentId);
             if (parentId > 0) {
-                Category parentMerchantCategory = Category.find.byId(parentId);
-                if (null != parentMerchantCategory) {
-                    String parentPath = parentMerchantCategory.path;
+                PostCategory parentMerchantPostCategory = PostCategory.find.byId(parentId);
+                if (null != parentMerchantPostCategory) {
+                    String parentPath = parentMerchantPostCategory.path;
                     if (ValidationUtil.isEmpty(parentPath)) parentPath = "/";
-                    Category.setPath(parentPath + parentMerchantCategory.id + "/");
+                    postCategory.setPath(parentPath + parentMerchantPostCategory.id + "/");
                 }
-            } else Category.setPath("/");
+            } else postCategory.setPath("/");
         }
     }
 
     /**
-     * @api {POST} /v1/cp/categories/ 05删除分类
-     * @apiName deleteCategory
-     * @apiGroup ADMIN-CATEGORY
+     * @api {POST} /v1/cp/post_categories/ 05删除贴子分类
+     * @apiName deletePostCategory
+     * @apiGroup ADMIN-POST-CATEGORY
      * @apiParam {int} categoryId 商品分类id
      * @apiParam {String} operation 操作,"del"为删除
      * @apiSuccess (Success 200) {int} code 200 请求成功
@@ -254,17 +257,17 @@ public class CategoryManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> deleteCategory(Http.Request request) {
+    public CompletionStage<Result> deletePostCategory(Http.Request request) {
         JsonNode jsonNode = request.body().asJson();
         String operation = jsonNode.findPath("operation").asText();
         return CompletableFuture.supplyAsync(() -> {
             if (ValidationUtil.isEmpty(operation) || !operation.equals("del")) return okCustomJson(CODE40001, "参数错误");
             long categoryId = jsonNode.findPath("categoryId").asInt();
             if (categoryId < 1) return okCustomJson(CODE40001, "参数错误");
-            Category category = Category.find.byId(categoryId);
-            Category subCategories = Category.find.query().where().eq("parentId", category.id).setMaxRows(1).findOne();
+            PostCategory postCategory = PostCategory.find.byId(categoryId);
+            PostCategory subCategories = PostCategory.find.query().where().eq("parentId", postCategory.id).setMaxRows(1).findOne();
             if (null != subCategories) return okCustomJson(CODE40003, "该分类为父级分类,不能直接删除");
-            category.delete();
+            postCategory.delete();
             updateCategoryCache();
             return okJSON200();
         });
