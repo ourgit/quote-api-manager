@@ -28,10 +28,8 @@ public class AliyunUploadController extends BaseController {
     Logger.ALogger logger = Logger.of(AliyunUploadController.class);
     private static final String END_POINT = "https://oss-cn-hangzhou.aliyuncs.com";
     private static final String END_POINT2 = "https://oss-accelerate.aliyuncs.com";
-    private static String bucketName = "qpub";
-    private static String bucketName2 = "qp2";
+    private static String bucketName = "q-files";
     public static String IMG_URL_PREFIX = "https://" + bucketName + ".oss-cn-hangzhou.aliyuncs.com/";
-    public static String IMG_URL_PREFIX2 = "https://" + bucketName2 + ".oss-cn-hangzhou.aliyuncs.com/";
 
     public CompletionStage<Result> upload(Http.Request request) {
         Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
@@ -77,11 +75,11 @@ public class AliyunUploadController extends BaseController {
     public Result uploadToOss2(File file, String key) {
         OSS client = new OSSClientBuilder().build(END_POINT, businessUtils.getAlinYunAccessId(), businessUtils.getAliYunSecretKey());
         try {
-            client.putObject(new PutObjectRequest(bucketName2, key, file));
-            client.setObjectAcl(bucketName2, key, CannedAccessControlList.PublicRead);
+            client.putObject(new PutObjectRequest(bucketName, key, file));
+            client.setObjectAcl(bucketName, key, CannedAccessControlList.PublicRead);
             ObjectNode node = Json.newObject();
             node.put("code", 200);
-            node.put("url", IMG_URL_PREFIX2 + key);
+            node.put("url", IMG_URL_PREFIX + key);
             return ok(node);
         } catch (OSSException oe) {
             logger.error("uploadToOss:" + oe.getMessage());
@@ -95,9 +93,10 @@ public class AliyunUploadController extends BaseController {
     public String uploadToOss(ByteArrayInputStream buffer, String key) {
         OSS client = new OSSClientBuilder().build(END_POINT2, businessUtils.getAlinYunAccessId(), businessUtils.getAliYunSecretKey());
         try {
-            client.putObject(new PutObjectRequest(bucketName, key, buffer));
+            String keyPath = "static/" + key;
+            client.putObject(new PutObjectRequest(bucketName, keyPath, buffer));
             client.setObjectAcl(bucketName, key, CannedAccessControlList.PublicRead);
-            String url = IMG_URL_PREFIX + key;
+            String url = IMG_URL_PREFIX + keyPath;
             return url;
         } catch (OSSException oe) {
             logger.error("uploadToOss:" + oe.getMessage());
