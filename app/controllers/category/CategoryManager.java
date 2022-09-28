@@ -7,6 +7,7 @@ import io.ebean.DB;
 import io.ebean.ExpressionList;
 import models.Category.Category;
 import play.Logger;
+import play.cache.NamedCache;
 import play.db.ebean.Transactional;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -29,6 +30,9 @@ public class CategoryManager extends BaseAdminSecurityController {
     Pinyin4j pinyin4j;
 
     Logger.ALogger logger = Logger.of(CategoryManager.class);
+    @Inject
+    @NamedCache("redis")
+    protected play.cache.redis.AsyncCacheApi redis;
 
     /**
      * @api {GET} /v1/cp/categories/?page=&filter=&parentId= 01分类列表
@@ -50,7 +54,7 @@ public class CategoryManager extends BaseAdminSecurityController {
         return CompletableFuture.supplyAsync(() -> {
             ExpressionList<Category> expressionList = Category.find.query().where();
             if (!ValidationUtil.isEmpty(filter)) expressionList.icontains("name", filter);
-            if (parentId >= 0) expressionList.eq("parentId", parentId);
+            if (parentId > 0) expressionList.eq("parentId", parentId);
             if (cateType > 0) expressionList.eq("cateType", cateType);
             List<Category> list = expressionList.orderBy().desc("sort").findList();
             ObjectNode result = Json.newObject();
@@ -258,7 +262,8 @@ public class CategoryManager extends BaseAdminSecurityController {
         JsonNode jsonNode = request.body().asJson();
         String operation = jsonNode.findPath("operation").asText();
         return CompletableFuture.supplyAsync(() -> {
-            if (ValidationUtil.isEmpty(operation) || !operation.equals("del")) return okCustomJson(CODE40001, "参数错误");
+            if (ValidationUtil.isEmpty(operation) || !operation.equals("del"))
+                return okCustomJson(CODE40001, "参数错误");
             long categoryId = jsonNode.findPath("categoryId").asInt();
             if (categoryId < 1) return okCustomJson(CODE40001, "参数错误");
             Category category = Category.find.byId(categoryId);
@@ -271,7 +276,12 @@ public class CategoryManager extends BaseAdminSecurityController {
     }
 
     private void updateCategoryCache() {
-        cacheUtils.updateMerchantCategoryCache();
+        String key = cacheUtils.getCategoryJsonCache(0);
+        String key1 = cacheUtils.getCategoryJsonCache(1);
+        String key2 = cacheUtils.getCategoryJsonCache(2);
+        redis.remove(key);
+        redis.remove(key1);
+        redis.remove(key2);
     }
 
 }

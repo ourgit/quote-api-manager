@@ -176,7 +176,7 @@ POST        /v1/cp/wechat_menu/                                   controllers.ba
 
 GET         /ws_manager/                                          controllers.push.PushController.handleWS()
 
-GET         /v1/cp/categories/                                    controllers.category.CategoryManager.listCategories(filter:String?="",parentId:Long ?= -1,cateType:Int?=1)
+GET         /v1/cp/categories/                                    controllers.category.CategoryManager.listCategories(filter:String?="",parentId:Long ?= -1,cateType:Int?=0)
 GET         /v1/cp/categories/:categoryId/                        controllers.category.CategoryManager.getCategory(categoryId:Long)
 POST        /v1/cp/categories/new/                                controllers.category.CategoryManager.addCategory(request:Request)
 POST        /v1/cp/categories/:categoryId/                        controllers.category.CategoryManager.updateCategory(request:Request,categoryId:Long)
