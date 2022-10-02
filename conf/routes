@@ -150,20 +150,12 @@ POST        /v1/cp/grey_users/new/                                controllers.ba
 POST        /v1/cp/grey_users/                                    controllers.basic.UpdateManager.delGreyUser(request: Request)
 
 
-POST        /v1/cp/shops/                                         controllers.basic.ShopManager.listOrg(request: Request)
-GET         /v1/cp/shop/:id/                                      controllers.basic.ShopManager.getOrg(request: Request,id:Long)
-POST        /v1/cp/shop/new/                                      controllers.basic.ShopManager.addOrg(request: Request)
-POST        /v1/cp/shop/:id/                                      controllers.basic.ShopManager.updateOrg(request: Request,id:Long)
-POST        /v1/cp/shop/                                          controllers.basic.ShopManager.deleteOrg(request: Request)
-POST        /v1/cp/batch_update_org_member/:orgId/                controllers.basic.ShopManager.batchUpdateOrgMember(request: Request,orgId:Long)
-GET         /v1/cp/shop_members/                                  controllers.basic.ShopManager.listOrgMembers(request: Request,orgId:Long?=0)
-POST        /v1/cp/bind_shop/                                     controllers.basic.ShopManager.bindShop(request: Request)
-
-GET         /v1/cp/shop_product_categories/                       controllers.basic.ShopManager.listShopProductCategories(filter:String?="",shopId:Long?=0,parentId:Long ?= -1)
-POST        /v1/cp/shop_product_categories/new/                   controllers.basic.ShopManager.addShopProductCategory(request:Request)
-POST        /v1/cp/shop_product_categories/:categoryId/           controllers.basic.ShopManager.updateShopProductCategory(request:Request,categoryId:Long)
-POST        /v1/cp/shop_product_categories/                       controllers.basic.ShopManager.deleteShopProductCategory(request:Request)
-
+POST        /v1/cp/shop_list/                                     controllers.basic.ShopManager.listShop(request: Request)
+GET         /v1/cp/shop/:id/                                      controllers.basic.ShopManager.getShop(request: Request,id:Long)
+GET         /v1/cp/shop_apply_list/                               controllers.basic.ShopManager.shopApplyList(request: Request,status:Int?=0,page:Int?=0)
+POST        /v1/cp/shop_audit/                                    controllers.basic.ShopManager.auditShop(request: Request)
+POST        /v1/cp/store/:id/                                     controllers.basic.ShopManager.updateShop(request: Request,id:Long)
+POST        /v1/cp/shop/                                          controllers.basic.ShopManager.deleteShop(request: Request)
 
 POST        /v1/cp/shop_profile_list/                             controllers.shop.ShopProfileManager.listShopProfile(request:Request)
 GET         /v1/cp/shop_profile/:id/                              controllers.shop.ShopProfileManager.getShopProfile(request:Request,id:Long)
@@ -206,26 +198,12 @@ POST        /v1/cp/show_case/:id/                                 controllers.pr
 POST        /v1/cp/show_case/                                     controllers.product.ShowCaseManager.deleteShowcase(request:Request)
 POST        /v1/cp/show_case_audit/:id/                           controllers.product.ShowCaseManager.auditShowCase(request:Request,id:Long)
 
-GET         /v1/cp/new_shop_plan_list/                            controllers.basic.NewShopPlanManager.listNewShopPlan(page:Int?=1,filter:String?="",clientType:Int?=0,bizType:Int?=0)
-GET         /v1/cp/new_shop_plan/:id/                             controllers.basic.NewShopPlanManager.getShopPlan(id:Int)
-POST        /v1/cp/new_shop_plan/new/                             controllers.basic.NewShopPlanManager.addNewShopPlan(request: Request)
-POST        /v1/cp/new_shop_plan/:id/                             controllers.basic.NewShopPlanManager.updateShopPlan(request: Request,id:Int)
-POST        /v1/cp/new_shop_plan/                                 controllers.basic.NewShopPlanManager.delShopPlan(request: Request)
-
-
 GET         /v1/cp/new_shop_categories/                           controllers.product.NewShopCategoryManager.listNewShopCategories(filter:String?="",parentId:Long ?= -1)
 GET         /v1/cp/new_shop_categories/:newShopCategoryId/        controllers.product.NewShopCategoryManager.getNewShopCategory(newShopCategoryId:Long)
 POST        /v1/cp/new_shop_categories/new/                       controllers.product.NewShopCategoryManager.addNewShopCategory(request:Request)
 POST        /v1/cp/new_shop_categories/:newShopCategoryId/        controllers.product.NewShopCategoryManager.updateNewShopCategory(request:Request,newShopCategoryId:Long)
 POST        /v1/cp/new_shop_categories/                           controllers.product.NewShopCategoryManager.deleteNewShopCategory(request:Request)
 POST        /v1/cp/batch_update_new_shop_factory/                 controllers.product.NewShopCategoryManager.batchUpdateNewShopFactory(request:Request)
-
-GET         /v1/cp/new_shop_factories/                            controllers.product.NewShopFactoryManager.listNewShopFactories(filter:String?="",parentId:Long ?= -1)
-GET         /v1/cp/new_shop_factories/:newShopFactoryId/          controllers.product.NewShopFactoryManager.getNewShopFactory(newShopFactoryId:Long)
-POST        /v1/cp/new_shop_factories/new/                        controllers.product.NewShopFactoryManager.addNewShopFactory(request:Request)
-POST        /v1/cp/new_shop_factories/:newShopFactoryId/          controllers.product.NewShopFactoryManager.updateNewShopFactory(request:Request,newShopFactoryId:Long)
-POST        /v1/cp/new_shop_factories/                            controllers.product.NewShopFactoryManager.deleteNewShopFactory(request:Request)
-POST        /v1/cp/batch_update_new_shop_factory/                 controllers.product.NewShopFactoryManager.batchUpdateNewShopFactory(request:Request)
 
 GET         /v1/cp/post_list/                                     controllers.post.PostManager.listPosts(request: Request,categoryId:Int?=0,page:Int?=1)
 GET         /v1/cp/posts/:id/                                     controllers.post.PostManager.getPost(request: Request,id:Long)
