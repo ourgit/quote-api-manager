@@ -1,4 +1,4 @@
-package models.Category;
+package models.category;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.ebean.Finder;

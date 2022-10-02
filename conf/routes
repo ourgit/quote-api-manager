@@ -227,6 +227,12 @@ POST        /v1/cp/new_shop_factories/:newShopFactoryId/          controllers.pr
 POST        /v1/cp/new_shop_factories/                            controllers.product.NewShopFactoryManager.deleteNewShopFactory(request:Request)
 POST        /v1/cp/batch_update_new_shop_factory/                 controllers.product.NewShopFactoryManager.batchUpdateNewShopFactory(request:Request)
 
+GET         /v1/cp/post_list/                                     controllers.post.PostManager.listPosts(request: Request,categoryId:Int?=0,page:Int?=1)
+GET         /v1/cp/posts/:id/                                     controllers.post.PostManager.getPost(request: Request,id:Long)
+POST        /v1/cp/post/                                          controllers.post.PostManager.deletePost(request: Request)
+POST        /v1/cp/post_top/                                      controllers.post.PostManager.placePostTop(request: Request)
+
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /*file                                                controllers.Assets.versioned(path="/public", file: Asset)
 

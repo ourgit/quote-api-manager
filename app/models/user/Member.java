@@ -25,6 +25,15 @@ public class Member extends Model {
      */
     public static final int MEMBER_STATUS_LOCK = 2;
 
+    public static final int USER_TYPE_CUSTOMER = 1;
+    public static final int USER_TYPE_STAFF = 10;
+    public static final int USER_TYPE_MANAGER = 20;
+
+    public static final int AUTH_STATUS_NOT_AUTH = 0;
+    public static final int AUTH_STATUS_PROCESSING = 1;
+    public static final int AUTH_STATUS_PRE_AUTH = 2;
+    public static final int AUTH_STATUS_AUTHED = 3;
+
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,6 +82,9 @@ public class Member extends Model {
     @Column(name = "shop_name")
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
     public String shopName;//头像
+
+    @Column(name = "auth_status")
+    public int authStatus;
 
     @Column(name = "user_type")
     public int userType;
@@ -181,5 +193,13 @@ public class Member extends Model {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
+    }
+
+    public int getAuthStatus() {
+        return authStatus;
+    }
+
+    public void setAuthStatus(int authStatus) {
+        this.authStatus = authStatus;
     }
 }

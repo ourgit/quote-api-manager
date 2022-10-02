@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.BaseAdminSecurityController;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
-import models.Category.Category;
+import models.category.Category;
 import play.Logger;
 import play.cache.NamedCache;
 import play.db.ebean.Transactional;
