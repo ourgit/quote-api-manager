@@ -205,6 +205,11 @@ GET         /v1/cp/posts/:id/                                     controllers.po
 POST        /v1/cp/post/                                          controllers.post.PostManager.deletePost(request: Request)
 POST        /v1/cp/post_top/                                      controllers.post.PostManager.placePostTop(request: Request)
 
+POST        /v1/cp/upload/                                        controllers.basic.UploaderManager.upload(request: Request)
+POST        /v1/cp/upload2/                                       controllers.basic.UploaderManager.upload2(request: Request)
+POST        /v1/cp/upload_resize_qiniu/                           controllers.basic.UploaderManager.uploadAndResize(request: Request)
+POST        /v1/cp/upload_base64/                                 controllers.basic.UploaderManager.uploadBase64(request: Request)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /*file                                                controllers.Assets.versioned(path="/public", file: Asset)

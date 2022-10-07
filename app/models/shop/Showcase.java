@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.ebean.Finder;
 import io.ebean.Model;
 import myannotation.EscapeHtmlSerializer;
+import myannotation.EscapeHtmlSerializerForKeepSomeHtml;
 
 import javax.persistence.*;
 
@@ -19,15 +20,12 @@ public class Showcase extends Model {
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int id;
+    public long id;
 
     @Column(name = "title")
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
     public String title;
 
-    @Column(name = "cover")
-    @JsonDeserialize(using = EscapeHtmlSerializer.class)
-    public String cover;
 
     @Column(name = "tags")
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
@@ -35,10 +33,17 @@ public class Showcase extends Model {
 
     @Column(name = "images")
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
-    public String images;//联系电话
+    public String images;
+
+    @Column(name = "cover")
+    @JsonDeserialize(using = EscapeHtmlSerializer.class)
+    public String cover;
 
     @Column(name = "image_count")
     public long imageCount;//联系电话
+
+    @Column(name = "category_id")
+    public long categoryId;
 
     @Column(name = "shop_name")
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
@@ -48,11 +53,15 @@ public class Showcase extends Model {
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
     public String shopLogo;
 
+    @Column(name = "content")
+    @JsonDeserialize(using = EscapeHtmlSerializerForKeepSomeHtml.class)
+    public String content;
+
     @Column(name = "place_top")
     public boolean placeTop;
 
     @Column(name = "shop_id")
-    public long shopId;//创建者uid
+    public long shopId;
 
     @Column(name = "status")
     public int status;
@@ -65,11 +74,11 @@ public class Showcase extends Model {
 
     public static Finder<Long, Showcase> find = new Finder<>(Showcase.class);
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -97,22 +106,6 @@ public class Showcase extends Model {
         this.images = images;
     }
 
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
-    }
-
-    public long getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(long shopId) {
-        this.shopId = shopId;
-    }
-
     public long getImageCount() {
         return imageCount;
     }
@@ -121,12 +114,20 @@ public class Showcase extends Model {
         this.imageCount = imageCount;
     }
 
-    public String getCover() {
-        return cover;
+    public long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCover(String cover) {
-        this.cover = cover;
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
     public String getShopLogo() {
@@ -137,12 +138,28 @@ public class Showcase extends Model {
         this.shopLogo = shopLogo;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public boolean isPlaceTop() {
         return placeTop;
     }
 
     public void setPlaceTop(boolean placeTop) {
         this.placeTop = placeTop;
+    }
+
+    public long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(long shopId) {
+        this.shopId = shopId;
     }
 
     public int getStatus() {
@@ -153,6 +170,14 @@ public class Showcase extends Model {
         this.status = status;
     }
 
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
+
     public long getCreateTime() {
         return createTime;
     }
@@ -161,11 +186,11 @@ public class Showcase extends Model {
         this.createTime = createTime;
     }
 
-    public int getSort() {
-        return sort;
+    public String getCover() {
+        return cover;
     }
 
-    public void setSort(int sort) {
-        this.sort = sort;
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }

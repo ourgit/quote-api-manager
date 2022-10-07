@@ -26,10 +26,9 @@ import java.util.concurrent.CompletionStage;
  */
 public class AliyunUploadController extends BaseController {
     Logger.ALogger logger = Logger.of(AliyunUploadController.class);
-    private static final String END_POINT = "https://oss-cn-hangzhou.aliyuncs.com";
-    private static final String END_POINT2 = "https://oss-accelerate.aliyuncs.com";
-    private static String bucketName = "q-files";
-    public static String IMG_URL_PREFIX = "https://" + bucketName + ".oss-cn-hangzhou.aliyuncs.com/";
+    public static final String END_POINT = "https://oss-cn-hangzhou.aliyuncs.com";
+    public static String bucketName = "renoseeker";
+    public static String IMG_URL_PREFIX = "https://dsyd2.oss-cn-hangzhou.aliyuncs.com/";
 
     public CompletionStage<Result> upload(Http.Request request) {
         Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
@@ -91,7 +90,7 @@ public class AliyunUploadController extends BaseController {
 
 
     public String uploadToOss(ByteArrayInputStream buffer, String key) {
-        OSS client = new OSSClientBuilder().build(END_POINT2, businessUtils.getAlinYunAccessId(), businessUtils.getAliYunSecretKey());
+        OSS client = new OSSClientBuilder().build(END_POINT, businessUtils.getAlinYunAccessId(), businessUtils.getAliYunSecretKey());
         try {
             String keyPath = "static/" + key;
             client.putObject(new PutObjectRequest(bucketName, keyPath, buffer));
