@@ -260,7 +260,7 @@ public class ShopManager extends BaseAdminController {
     }
 
     /**
-     * @api {POST} /v1/cp/store/:id/ 05修改门店
+     * @api {POST} /v1/cp/shop/:id/ 05修改门店
      * @apiName updateShop
      * @apiGroup ADMIN-SHOP
      * @apiParam {String} name 名称

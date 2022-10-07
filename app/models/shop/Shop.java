@@ -157,12 +157,6 @@ public class Shop extends Model {
     @Column(name = "place_top")
     public boolean placeTop;
 
-    @Column(name = "dada_shop_id")
-    public String dadaShopId = "";
-
-    @Column(name = "dada_user_no")
-    public String dadaUserNo = "";
-
     @Column(name = "bulletin")
     public String bulletin = "";
 
@@ -473,22 +467,6 @@ public class Shop extends Model {
 
     public void setPlaceTop(boolean placeTop) {
         this.placeTop = placeTop;
-    }
-
-    public String getDadaShopId() {
-        return dadaShopId;
-    }
-
-    public void setDadaShopId(String dadaShopId) {
-        this.dadaShopId = dadaShopId;
-    }
-
-    public String getDadaUserNo() {
-        return dadaUserNo;
-    }
-
-    public void setDadaUserNo(String dadaUserNo) {
-        this.dadaUserNo = dadaUserNo;
     }
 
     public int getShopLevel() {

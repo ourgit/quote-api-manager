@@ -157,11 +157,6 @@ POST        /v1/cp/shop_audit/                                    controllers.ba
 POST        /v1/cp/store/:id/                                     controllers.basic.ShopManager.updateShop(request: Request,id:Long)
 POST        /v1/cp/shop/                                          controllers.basic.ShopManager.deleteShop(request: Request)
 
-POST        /v1/cp/shop_profile_list/                             controllers.shop.ShopProfileManager.listShopProfile(request:Request)
-GET         /v1/cp/shop_profile/:id/                              controllers.shop.ShopProfileManager.getShopProfile(request:Request,id:Long)
-POST        /v1/cp/shop_auth_status/                              controllers.shop.ShopProfileManager.handleShopAuth(request:Request)
-
-
 
 GET         /v1/cp/wechat_menu/                                   controllers.basic.WechatManager.getWechatMenu
 POST        /v1/cp/wechat_menu/                                   controllers.basic.WechatManager.createMenu(request:Request)
