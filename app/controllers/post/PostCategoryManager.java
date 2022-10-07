@@ -116,6 +116,7 @@ public class PostCategoryManager extends BaseAdminSecurityController {
             String poster = requestNode.findPath("poster").asText();
             String seoKeyword = requestNode.findPath("seoKeyword").asText();
             String seoDescription = requestNode.findPath("seoDescription").asText();
+            String adminList = requestNode.findPath("adminList").asText();
             if (ValidationUtil.isEmpty(name)) return okCustomJson(CODE40001, "参数错误");
             PostCategory parentMerchantPostCategory = null;
             if (parentId > 0) {
@@ -143,6 +144,7 @@ public class PostCategoryManager extends BaseAdminSecurityController {
             postCategory.setCreateTime(currentTime);
             if (!ValidationUtil.isEmpty(imgUrl)) postCategory.setImgUrl(imgUrl);
             postCategory.setPathName(getPathName(postCategory.path));
+            postCategory.setAdminList(adminList);
             postCategory.save();
             updateCategoryCache();
             return okJSON200();
@@ -219,11 +221,16 @@ public class PostCategoryManager extends BaseAdminSecurityController {
             String poster = requestNode.findPath("poster").asText();
             String seoKeyword = requestNode.findPath("seoKeyword").asText();
             String seoDescription = requestNode.findPath("seoDescription").asText();
+
             if (!ValidationUtil.isEmpty(poster)) postCategory.setPoster(poster);
             if (!ValidationUtil.isEmpty(seoKeyword)) postCategory.setSeoKeyword(seoKeyword);
             if (!ValidationUtil.isEmpty(seoDescription)) postCategory.setSeoDescription(seoDescription);
             if (cateType > 0) postCategory.setCateType(cateType);
             postCategory.setPathName(getPathName(postCategory.path));
+            if (requestNode.has("adminList")) {
+                String adminList = requestNode.findPath("adminList").asText();
+                postCategory.setAdminList(adminList);
+            }
             postCategory.save();
             updateCategoryCache();
             return okJSON200();
@@ -261,7 +268,8 @@ public class PostCategoryManager extends BaseAdminSecurityController {
         JsonNode jsonNode = request.body().asJson();
         String operation = jsonNode.findPath("operation").asText();
         return CompletableFuture.supplyAsync(() -> {
-            if (ValidationUtil.isEmpty(operation) || !operation.equals("del")) return okCustomJson(CODE40001, "参数错误");
+            if (ValidationUtil.isEmpty(operation) || !operation.equals("del"))
+                return okCustomJson(CODE40001, "参数错误");
             long categoryId = jsonNode.findPath("categoryId").asInt();
             if (categoryId < 1) return okCustomJson(CODE40001, "参数错误");
             PostCategory postCategory = PostCategory.find.byId(categoryId);

@@ -6,6 +6,7 @@ import io.ebean.Model;
 import myannotation.EscapeHtmlSerializer;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,8 +79,14 @@ public class PostCategory extends Model {
     @Column(name = "create_time")
     public long createTime;
 
+    @Column(name = "admin_list")
+    public String adminList;
+
     @Transient
     public List<PostCategory> children;
+
+    @Transient
+    public List<Post> postList = new ArrayList<>();
 
     public static Finder<Long, PostCategory> find = new Finder<>(PostCategory.class);
 
@@ -217,5 +224,13 @@ public class PostCategory extends Model {
 
     public void setSeoDescription(String seoDescription) {
         this.seoDescription = seoDescription;
+    }
+
+    public String getAdminList() {
+        return adminList;
+    }
+
+    public void setAdminList(String adminList) {
+        this.adminList = adminList;
     }
 }
