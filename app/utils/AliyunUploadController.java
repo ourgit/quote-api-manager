@@ -28,7 +28,7 @@ public class AliyunUploadController extends BaseController {
     Logger.ALogger logger = Logger.of(AliyunUploadController.class);
     public static final String END_POINT = "https://oss-cn-hangzhou.aliyuncs.com";
     public static String bucketName = "renoseeker";
-    public static String IMG_URL_PREFIX = "https://dsyd2.oss-cn-hangzhou.aliyuncs.com/";
+    public static String IMG_URL_PREFIX = "https://renoseeker.oss-cn-hangzhou.aliyuncs.com/";
 
     public CompletionStage<Result> upload(Http.Request request) {
         Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
