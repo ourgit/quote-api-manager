@@ -232,13 +232,12 @@ public class ShopManager extends BaseAdminController {
                 Shop shop = new Shop();
                 shop.setStatus(Shop.STATUS_NORMAL);
                 shop.setName(log.shopName);
-                shop.setDigest("");
+                shop.setDigest(log.digest);
                 shop.setContactNumber(log.phoneNumber);
                 shop.setContactName(log.userName);
                 shop.setContactAddress(log.address);
-                shop.setLicenseNumber(log.licenseNo);
-                shop.setLicenseImg(log.licenseUrl);
                 shop.setDescription("");
+                shop.setBusinessTime(log.businessItems);
                 shop.setApproveNote("");
                 shop.setRectLogo(log.logo);
                 shop.setAvatar(log.logo);

@@ -31,30 +31,10 @@ public class ShopApplyLog extends Model {
     @Column(name = "user_name")
     public String userName;
 
-    @Column(name = "name_in_law")
-    public String nameInLaw;
-
-    @Column(name = "id_card_id")
-    public long idCardId;
-
-    @Column(name = "license_no")
-    public String licenseNo;
-
     @Column(name = "audit_note")
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
     public String auditNote;
 
-    @Column(name = "id_card_front_url")
-    @JsonDeserialize(using = EscapeHtmlSerializer.class)
-    public String idCardFrontUrl;
-
-    @Column(name = "id_card_back_url")
-    @JsonDeserialize(using = EscapeHtmlSerializer.class)
-    public String idCardBackUrl;
-
-    @Column(name = "license_url")
-    @JsonDeserialize(using = EscapeHtmlSerializer.class)
-    public String licenseUrl;
 
     @Column(name = "phone_number")
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
@@ -64,6 +44,14 @@ public class ShopApplyLog extends Model {
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
     public String address;
 
+    @Column(name = "digest")
+    @JsonDeserialize(using = EscapeHtmlSerializer.class)
+    public String digest;
+
+    @Column(name = "business_items")
+    @JsonDeserialize(using = EscapeHtmlSerializer.class)
+    public String businessItems;
+
     @Column(name = "auditor_uid")
     public long auditorUid;
 
@@ -71,9 +59,6 @@ public class ShopApplyLog extends Model {
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
     public String auditorName;
 
-    @Column(name = "company_name")
-    @JsonDeserialize(using = EscapeHtmlSerializer.class)
-    public String companyName;
 
     @Column(name = "logo")
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
@@ -130,22 +115,6 @@ public class ShopApplyLog extends Model {
         this.userName = userName;
     }
 
-    public String getNameInLaw() {
-        return nameInLaw;
-    }
-
-    public void setNameInLaw(String nameInLaw) {
-        this.nameInLaw = nameInLaw;
-    }
-
-    public long getIdCardId() {
-        return idCardId;
-    }
-
-    public void setIdCardId(long idCardId) {
-        this.idCardId = idCardId;
-    }
-
     public String getAuditNote() {
         return auditNote;
     }
@@ -154,28 +123,36 @@ public class ShopApplyLog extends Model {
         this.auditNote = auditNote;
     }
 
-    public String getIdCardFrontUrl() {
-        return idCardFrontUrl;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setIdCardFrontUrl(String idCardFrontUrl) {
-        this.idCardFrontUrl = idCardFrontUrl;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getIdCardBackUrl() {
-        return idCardBackUrl;
+    public String getAddress() {
+        return address;
     }
 
-    public void setIdCardBackUrl(String idCardBackUrl) {
-        this.idCardBackUrl = idCardBackUrl;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getLicenseUrl() {
-        return licenseUrl;
+    public String getDigest() {
+        return digest;
     }
 
-    public void setLicenseUrl(String licenseUrl) {
-        this.licenseUrl = licenseUrl;
+    public void setDigest(String digest) {
+        this.digest = digest;
+    }
+
+    public String getBusinessItems() {
+        return businessItems;
+    }
+
+    public void setBusinessItems(String businessItems) {
+        this.businessItems = businessItems;
     }
 
     public long getAuditorUid() {
@@ -192,6 +169,14 @@ public class ShopApplyLog extends Model {
 
     public void setAuditorName(String auditorName) {
         this.auditorName = auditorName;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 
     public long getCreateTime() {
@@ -216,45 +201,5 @@ public class ShopApplyLog extends Model {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public String getLicenseNo() {
-        return licenseNo;
-    }
-
-    public void setLicenseNo(String licenseNo) {
-        this.licenseNo = licenseNo;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
     }
 }

@@ -210,6 +210,12 @@ POST        /v1/cp/upload2/                                       controllers.ba
 POST        /v1/cp/upload_resize_qiniu/                           controllers.basic.UploaderManager.uploadAndResize(request: Request)
 POST        /v1/cp/upload_base64/                                 controllers.basic.UploaderManager.uploadBase64(request: Request)
 
+GET         /v1/cp/membership_list/                               controllers.member.MembershipManager.listMembership
+GET         /v1/cp/membership_list/:id/                           controllers.member.MembershipManager.getMembership(id:Long)
+POST        /v1/cp/membership/new/                                controllers.member.MembershipManager.addMembership(request: Request)
+POST        /v1/cp/membership/:id/                                controllers.member.MembershipManager.updateMembership(request: Request,id:Long)
+POST        /v1/cp/membership/                                    controllers.member.MembershipManager.deleteMembership(request: Request)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /*file                                                controllers.Assets.versioned(path="/public", file: Asset)
