@@ -37,12 +37,6 @@ public class MemberManager extends BaseAdminSecurityController {
     @Inject
     EscapeHtmlSerializer escapeHtmlSerializer;
 
-    @Inject
-    EncodeUtils encodeUtils;
-
-    @Inject
-    BalanceUtils balanceUtils;
-
     /**
      * @api {POST} /v1/cp/members/?page=&uid=&filter= 01获取用户列表
      * @apiName listMembers
