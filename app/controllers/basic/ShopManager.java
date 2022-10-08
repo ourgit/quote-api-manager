@@ -241,6 +241,19 @@ public class ShopManager extends BaseAdminController {
                 shop.setApproveNote("");
                 shop.setRectLogo(log.logo);
                 shop.setAvatar(log.logo);
+                shop.setApplyCategories(log.categoryList);
+                if (!ValidationUtil.isEmpty(log.categoryList)) {
+                    ArrayNode nodes = (ArrayNode) Json.parse(log.categoryList);
+                    StringBuilder sb = new StringBuilder();
+                    nodes.forEach((node) -> {
+                        long categoryId = node.asLong();
+                        PostCategory postCategory = PostCategory.find.byId(categoryId);
+                        if (null != postCategory) {
+                            sb.append(postCategory.name);
+                        }
+                    });
+                    shop.setApplyCategoriesName(sb.toString());
+                }
                 shop.setFilter(Json.stringify(Json.toJson(shop)));
                 shop.save();
                 Member member = Member.find.byId(log.uid);

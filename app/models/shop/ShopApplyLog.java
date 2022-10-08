@@ -59,6 +59,10 @@ public class ShopApplyLog extends Model {
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
     public String auditorName;
 
+    @Column(name = "category_list")
+    @JsonDeserialize(using = EscapeHtmlSerializer.class)
+    public String categoryList;
+
 
     @Column(name = "logo")
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
@@ -201,5 +205,13 @@ public class ShopApplyLog extends Model {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getCategoryList() {
+        return categoryList;
+    }
+
+    public void setCategoryList(String categoryList) {
+        this.categoryList = categoryList;
     }
 }
