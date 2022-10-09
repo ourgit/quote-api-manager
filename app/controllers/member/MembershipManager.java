@@ -95,7 +95,6 @@ public class MembershipManager extends BaseAdminSecurityController {
             long price = requestNode.findPath("price").asLong();
             long sort = requestNode.findPath("sort").asLong();
             if (duration < 1) return okCustomJson(CODE40001, "请输入时长");
-            if (oldPrice < 1) return okCustomJson(CODE40001, "请输入原价");
             if (price < 1) return okCustomJson(CODE40001, "请输入现价");
             Membership exist = Membership.find.query().where()
                     .eq("duration", duration)
@@ -132,7 +131,7 @@ public class MembershipManager extends BaseAdminSecurityController {
             long oldPrice = requestNode.findPath("oldPrice").asLong();
             long price = requestNode.findPath("price").asLong();
             long sort = requestNode.findPath("sort").asLong();
-            if (oldPrice > 0) membership.setOldPrice(oldPrice);
+            if (requestNode.has("oldPrice")) membership.setOldPrice(oldPrice);
             if (price > 0) membership.setPrice(price);
             if (sort > 0) membership.setSort(sort);
             membership.save();
