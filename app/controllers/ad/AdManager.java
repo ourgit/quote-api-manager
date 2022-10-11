@@ -7,8 +7,8 @@ import controllers.BaseAdminSecurityController;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import models.ad.Ad;
+import models.ad.AdOwner;
 import models.admin.AdminMember;
-import models.article.Article;
 import play.db.ebean.Transactional;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -31,32 +31,19 @@ public class AdManager extends BaseAdminSecurityController {
      * @apiName listAd
      * @apiGroup ADMIN-AD
      * @apiParam {int} [status] 1正常  -1下架
-     * @apiParam {String} title title
-     * @apiParam {String} content content
+     * @apiParam {String} position position
+     * @apiParam {String} dimension dimension
      * @apiSuccess (Success 200) {int} code 200 请求成功
      * @apiSuccess (Success 200) {JsonArray} list 菜单列表
      * @apiSuccess (Success 200) {long} id id
-     * @apiSuccess (Success 200){String} title 标题，这个也可能是商家的名字，放在第一行
-     * @apiSuccess (Success 200){String} digest 摘要,需要允许换行
-     * @apiSuccess (Success 200){String} content 内容
-     * @apiSuccess (Success 200){String} img1 图片1，这里也可以换成一个视频
-     * @apiSuccess (Success 200){String} img2 图片2
-     * @apiSuccess (Success 200){String} img3 图片3
-     * @apiSuccess (Success 200){String} img4 图片4
-     * @apiSuccess (Success 200){String} img5 图片5
-     * @apiSuccess (Success 200){String} img6 图片6
-     * @apiSuccess (Success 200){String} img7 图片7
-     * @apiSuccess (Success 200){String} img8 图片8
-     * @apiSuccess (Success 200){String} img9 图片9
-     * @apiSuccess (Success 200){String} linkUrl 链接地址
-     * @apiSuccess (Success 200){long} budget 预算奖励
-     * @apiSuccess (Success 200){long} views 阅读数
-     * @apiSuccess (Success 200){long} sort 排序
-     * @apiSuccess (Success 200){long} articleId 广告文章ID
-     * @apiSuccess (Success 200){int} status 状态1正常  -1下架
-     * @apiSuccess (Success 200){long} beginTime beginTime 开始时间
-     * @apiSuccess (Success 200){long} endTime endTime 结束时间
-     * @apiSuccess (Success 200){long} updateTime updateTime 更新时间
+     * @apiSuccess (Success 200)　{String} position 位置
+     * @apiSuccess (Success 200)　{String} dimension　尺寸
+     * @apiSuccess (Success 200)　{long} price　价格
+     * @apiSuccess (Success 200)　{int} days　计价天数
+     * @apiSuccess (Success 200)　{String} display 展示商家数
+     * @apiSuccess (Success 200)　{long} updateTime 更新时间
+     * @apiSuccess (Success 200)　{long} createTime 创建时间
+     * @apiSuccess (Success 200)　{Array} adOwnerList 广告主列表
      */
     @BodyParser.Of(BodyParser.Json.class)
     public CompletionStage<Result> listAd(Http.Request request) {
@@ -66,14 +53,14 @@ public class AdManager extends BaseAdminSecurityController {
             AdminMember admin = adminOptional.get();
             if (null == admin) return unauth403();
             JsonNode requestNode = request.body().asJson();
-            String title = requestNode.findPath("title").asText();
-            String content = requestNode.findPath("content").asText();
+            String position = requestNode.findPath("position").asText();
+            String dimension = requestNode.findPath("dimension").asText();
             int page = requestNode.findPath("page").asInt();
             int status = requestNode.findPath("status").asInt();
             ExpressionList<Ad> expressionList = Ad.find.query().where();
             if (status != 0) expressionList.eq("status", status);
-            if (!ValidationUtil.isEmpty(title)) expressionList.icontains("title", title);
-            if (!ValidationUtil.isEmpty(content)) expressionList.icontains("content", content);
+            if (!ValidationUtil.isEmpty(position)) expressionList.icontains("position", position);
+            if (!ValidationUtil.isEmpty(dimension)) expressionList.icontains("dimension", dimension);
             ObjectNode result = Json.newObject();
             result.put(CODE, CODE200);
             PagedList<Ad> pagedList = expressionList
@@ -83,6 +70,13 @@ public class AdManager extends BaseAdminSecurityController {
                     .findPagedList();
             int pages = pagedList.getTotalPageCount();
             List<Ad> list = pagedList.getList();
+            list.parallelStream().forEach((ad) -> {
+                List<AdOwner> adOwners = AdOwner.find.query().where()
+                        .eq("adId", ad.id)
+                        .orderBy().desc("sort")
+                        .findList();
+                ad.adOwnerList.addAll(adOwners);
+            });
             result.set("list", Json.toJson(list));
             result.put("pages", pages);
             return ok(result);
@@ -93,29 +87,13 @@ public class AdManager extends BaseAdminSecurityController {
      * @api {POST} /v1/cp/ad/new/ 02添加广告
      * @apiName addAd
      * @apiGroup ADMIN-AD
-     * @apiParam {String} title 标题，这个也可能是商家的名字，放在第一行
-     * @apiParam {String} digest 摘要,需要允许换行
-     * @apiParam {String} content 内容
-     * @apiParam {String} img1 图片1，这里也可以换成一个视频
-     * @apiParam {String} img2 图片2
-     * @apiParam {String} img3 图片3
-     * @apiParam {String} img4 图片4
-     * @apiParam {String} img5 图片5
-     * @apiParam {String} img6 图片6
-     * @apiParam {String} img7 图片7
-     * @apiParam {String} img8 图片8
-     * @apiParam {String} img9 图片9
-     * @apiParam {String} linkUrl 链接地址
-     * @apiParam {long} budget 预算奖励
-     * @apiParam {long} articleId 广告文章ID
-     * @apiParam {long} views 阅读数
-     * @apiParam {long} sort 排序
-     * @apiParam {int} status 状态1正常  -1下架
-     * @apiParam {long} beginTime beginTime 开始时间
-     * @apiParam {long} endTime endTime 结束时间
+     * @apiParam {String} position 位置
+     * @apiParam {String} dimension　尺寸
+     * @apiParam {long} price　价格
+     * @apiParam {int} days　计价天数
+     * @apiParam {String} display 展示商家数
      * @apiSuccess (Success 200) {int} code 200 请求成功
      * @apiSuccess (Error 40001) {int} code 40001 参数错误
-     * @apiSuccess (Error 40002) {int} code 40002 该广告已存在
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
@@ -129,14 +107,13 @@ public class AdManager extends BaseAdminSecurityController {
             JsonNode requestNode = request.body().asJson();
             Ad param = Json.fromJson(requestNode, Ad.class);
             if (null == param) return okCustomJson(CODE40001, "参数错误");
-            if (ValidationUtil.isEmpty(param.title)) return okCustomJson(CODE40001, "标题不能为空");
-            if (ValidationUtil.isEmpty(param.digest)) return okCustomJson(CODE40001, "摘要不能为空");
-            if (ValidationUtil.isEmpty(param.img1)) return okCustomJson(CODE40001, "至少一张图片或者视频");
-            if (param.articleId < 1) return okCustomJson(CODE40001, "广告详情文章不能为空");
-            Article article = Article.find.byId(param.articleId);
-            if (null == article) return okCustomJson(CODE40001, "广告详情文章不能为空");
+            if (ValidationUtil.isEmpty(param.position)) return okCustomJson(CODE40001, "位置不能为空");
+            if (ValidationUtil.isEmpty(param.dimension)) return okCustomJson(CODE40001, "尺寸不能为空");
+            if (ValidationUtil.isEmpty(param.display)) return okCustomJson(CODE40001, "展示商家数不能为空");
+            if (param.price < 1) return okCustomJson(CODE40001, "价格有误");
+            if (param.days < 1) return okCustomJson(CODE40001, "天数有误");
             long currentTime = dateUtils.getCurrentTimeBySecond();
-            if (param.status == 0) param.setStatus(Ad.STATUS_NORMAL);
+            param.setStatus(Ad.STATUS_NORMAL);
             param.setUpdateTime(currentTime);
             param.setCreateTime(currentTime);
             param.save();
@@ -150,6 +127,11 @@ public class AdManager extends BaseAdminSecurityController {
      * @api {POST} /v1/cp/ad/:id/ 03修改广告
      * @apiName updateAD
      * @apiGroup ADMIN-AD
+     * @apiParam {String} position 位置
+     * @apiParam {String} dimension　尺寸
+     * @apiParam {long} price　价格
+     * @apiParam {int} days　计价天数
+     * @apiParam {String} display 展示商家数
      * @apiSuccess (Success 200) {int} code 200 请求成功
      * @apiSuccess (Error 40001) {int} code 40001 参数错误
      * @apiSuccess (Error 40002) {int} code 40002 该广告不存在
@@ -169,26 +151,12 @@ public class AdManager extends BaseAdminSecurityController {
             Ad ad = Ad.find.byId(id);
             if (null == ad) return okCustomJson(CODE40002, "该广告不存在");
             businessUtils.addOperationLog(request, admin, "修改广告，改之前的值：" + ad.toString() + "修改的参数值：" + requestNode.toString());
-            if (requestNode.has("avatar")) ad.setAvatar(param.avatar);
-            if (requestNode.has("title")) ad.setTitle(param.title);
-            if (requestNode.has("digest")) ad.setDigest(param.digest);
-            if (requestNode.has("content")) ad.setContent(param.content);
-            if (requestNode.has("img1")) ad.setImg1(param.img1);
-            if (requestNode.has("img2")) ad.setImg2(param.img2);
-            if (requestNode.has("img3")) ad.setImg3(param.img3);
-            if (requestNode.has("img4")) ad.setImg4(param.img4);
-            if (requestNode.has("img5")) ad.setImg5(param.img5);
-            if (requestNode.has("img6")) ad.setImg6(param.img6);
-            if (requestNode.has("img7")) ad.setImg7(param.img7);
-            if (requestNode.has("img8")) ad.setImg8(param.img8);
-            if (requestNode.has("img9")) ad.setImg9(param.img9);
-            if (requestNode.has("linkUrl")) ad.setLinkUrl(param.linkUrl);
-            if (requestNode.has("budget")) ad.setBudget(param.budget);
+            if (requestNode.has("position")) ad.setPosition(param.position);
+            if (requestNode.has("dimension")) ad.setDimension(param.dimension);
+            if (requestNode.has("price")) ad.setPrice(param.price);
+            if (requestNode.has("days")) ad.setDays(param.days);
             if (requestNode.has("status")) ad.setStatus(param.status);
-            if (requestNode.has("sort")) ad.setSort(param.sort);
-            if (requestNode.has("beginTime")) ad.setBeginTime(param.beginTime);
-            if (requestNode.has("endTime")) ad.setEndTime(param.endTime);
-            if (requestNode.has("articleId")) ad.setArticleId(param.articleId);
+            if (requestNode.has("display")) ad.setDisplay(param.display);
             long currentTime = dateUtils.getCurrentTimeBySecond();
             ad.setUpdateTime(currentTime);
             ad.save();
@@ -226,5 +194,92 @@ public class AdManager extends BaseAdminSecurityController {
             return okJSON200();
         });
     }
+
+    /**
+     * @api {POST} /v1/cp/ad_owner/new/ 05添加广告主
+     * @apiName addAdOwner
+     * @apiGroup ADMIN-AD
+     * @apiParam {long} adId　广告id
+     * @apiParam {long} beginTime 开始展示时间
+     * @apiParam {long} endTime 展示到期时间
+     * @apiParam {int} sort sort
+     * @apiParam {String} sourceUrl 素材源
+     * @apiParam {String} linkUrl 跳转链接
+     * @apiParam {long} uid uid
+     * @apiSuccess (Success 200) {int} code 200 请求成功
+     * @apiSuccess (Error 40001) {int} code 40001 参数错误
+     */
+    @BodyParser.Of(BodyParser.Json.class)
+    @Transactional
+    public CompletionStage<Result> addAdOwner(Http.Request request) {
+        return CompletableFuture.supplyAsync(() -> {
+            Optional<AdminMember> adminOptional = businessUtils.getAdminByAuthToken(request);
+            if (!adminOptional.isPresent()) return unauth403();
+            AdminMember admin = adminOptional.get();
+            if (null == admin) return unauth403();
+
+            JsonNode requestNode = request.body().asJson();
+            AdOwner param = Json.fromJson(requestNode, AdOwner.class);
+            if (null == param) return okCustomJson(CODE40001, "参数错误");
+            if (ValidationUtil.isEmpty(param.sourceUrl)) return okCustomJson(CODE40001, "素材源不能为空");
+            if (param.adId < 1) return okCustomJson(CODE40001, "请选择广告位置");
+            if (param.beginTime < 1) return okCustomJson(CODE40001, "请选择生效时间");
+            if (param.endTime < 1) return okCustomJson(CODE40001, "请选择到期时间");
+            Ad ad = Ad.find.byId(param.adId);
+            if (null == ad) return okCustomJson(CODE40001, "该广告位置不存在");
+            param.setPosition(ad.position);
+            param.setDimension(ad.dimension);
+            long currentTime = dateUtils.getCurrentTimeBySecond();
+            param.setStatus(Ad.STATUS_NORMAL);
+            param.setUpdateTime(currentTime);
+            param.setCreateTime(currentTime);
+            param.save();
+            businessUtils.addOperationLog(request, admin, "添加广告主：" + requestNode.toString());
+            return okJSON200();
+        });
+    }
+
+    /**
+     * @api {POST} /v1/cp/ad_owner/:id/ 06修改广告主
+     * @apiName updateAdOwner
+     * @apiGroup ADMIN-AD
+     * @apiParam {long} beginTime 开始展示时间
+     * @apiParam {long} endTime 展示到期时间
+     * @apiParam {int} sort sort
+     * @apiParam {String} sourceUrl 素材源
+     * @apiParam {String} linkUrl 跳转链接
+     * @apiSuccess (Success 200) {int} code 200 请求成功
+     * @apiSuccess (Error 40001) {int} code 40001 参数错误
+     */
+    @BodyParser.Of(BodyParser.Json.class)
+    @Transactional
+    public CompletionStage<Result> updateAdOwner(Http.Request request, long id) {
+        return CompletableFuture.supplyAsync(() -> {
+            Optional<AdminMember> adminOptional = businessUtils.getAdminByAuthToken(request);
+            if (!adminOptional.isPresent()) return unauth403();
+            AdminMember admin = adminOptional.get();
+            if (null == admin) return unauth403();
+
+            JsonNode requestNode = request.body().asJson();
+            AdOwner adOwner = AdOwner.find.byId(id);
+            if (null == adOwner) return okCustomJson(CODE40001, "该广告主不存在");
+
+            AdOwner param = Json.fromJson(requestNode, AdOwner.class);
+            if (null == param) return okCustomJson(CODE40001, "参数错误");
+
+            long currentTime = dateUtils.getCurrentTimeBySecond();
+            if (requestNode.has("status")) adOwner.setStatus(param.status);
+            if (requestNode.has("beginTime")) adOwner.setBeginTime(param.beginTime);
+            if (requestNode.has("endTime")) adOwner.setEndTime(param.endTime);
+            if (requestNode.has("sort")) adOwner.setSort(param.sort);
+            if (requestNode.has("sourceUrl")) adOwner.setSourceUrl(param.sourceUrl);
+            if (requestNode.has("linkUrl")) adOwner.setLinkUrl(param.linkUrl);
+            adOwner.setUpdateTime(currentTime);
+            businessUtils.addOperationLog(request, admin, "修改广告主，改之前的值：" + adOwner.toString() + "修改的参数值：" + requestNode.toString());
+            adOwner.save();
+            return okJSON200();
+        });
+    }
+
 
 }

@@ -184,6 +184,8 @@ POST        /v1/cp/ad_list/                                       controllers.ad
 POST        /v1/cp/ad/new/                                        controllers.ad.AdManager.addAd(request: Request)
 POST        /v1/cp/ad/:id/                                        controllers.ad.AdManager.updateAD(request: Request,id:Long)
 POST        /v1/cp/ad/                                            controllers.ad.AdManager.delAd(request: Request)
+POST        /v1/cp/ad_owner/new/                                  controllers.ad.AdManager.addAdOwner(request: Request)
+POST        /v1/cp/ad_owner/:id/                                  controllers.ad.AdManager.updateAdOwner(request: Request,id:Long)
 
 
 GET         /v1/cp/show_case_list/                                controllers.product.ShowCaseManager.listShowCase(request:Request, shopId:Long?=0,page:Int?=1, title:String?="")
