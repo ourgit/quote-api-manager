@@ -254,6 +254,12 @@ public class ShopManager extends BaseAdminController {
                     });
                     shop.setApplyCategoriesName(sb.toString());
                 }
+                long currentTime = dateUtils.getCurrentTimeBySecond();
+                shop.setUpdateTime(currentTime);
+                shop.setCreateTime(currentTime);
+                shop.setCreatorId(log.uid);
+                shop.setApproverId(admin.id);
+                shop.setApproveNote(auditNote);
                 shop.setFilter(Json.stringify(Json.toJson(shop)));
                 shop.save();
                 Member member = Member.find.byId(log.uid);
