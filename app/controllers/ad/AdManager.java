@@ -40,6 +40,8 @@ public class AdManager extends BaseAdminSecurityController {
      * @apiSuccess (Success 200)　{String} dimension　尺寸
      * @apiSuccess (Success 200)　{long} price　价格
      * @apiSuccess (Success 200)　{int} days　计价天数
+     * @apiSuccess (Success 200)　{int} sourceType　客户端类型 1PC 2H5
+     * @apiSuccess (Success 200)　{int} pageType　页面类型
      * @apiSuccess (Success 200)　{String} display 展示商家数
      * @apiSuccess (Success 200)　{long} updateTime 更新时间
      * @apiSuccess (Success 200)　{long} createTime 创建时间
@@ -57,8 +59,12 @@ public class AdManager extends BaseAdminSecurityController {
             String dimension = requestNode.findPath("dimension").asText();
             int page = requestNode.findPath("page").asInt();
             int status = requestNode.findPath("status").asInt();
+            int sourceType = requestNode.findPath("sourceType").asInt();
+            int pageType = requestNode.findPath("pageType").asInt();
             ExpressionList<Ad> expressionList = Ad.find.query().where();
             if (status != 0) expressionList.eq("status", status);
+            if (sourceType > 0) expressionList.eq("sourceType", sourceType);
+            if (pageType > 0) expressionList.eq("pageType", pageType);
             if (!ValidationUtil.isEmpty(position)) expressionList.icontains("position", position);
             if (!ValidationUtil.isEmpty(dimension)) expressionList.icontains("dimension", dimension);
             ObjectNode result = Json.newObject();
@@ -91,6 +97,8 @@ public class AdManager extends BaseAdminSecurityController {
      * @apiParam {String} dimension　尺寸
      * @apiParam {long} price　价格
      * @apiParam {int} days　计价天数
+     * @apiParam　{int} sourceType　客户端类型 1PC 2H5
+     * @apiParam　{int} pageType　页面类型
      * @apiParam {String} display 展示商家数
      * @apiSuccess (Success 200) {int} code 200 请求成功
      * @apiSuccess (Error 40001) {int} code 40001 参数错误
@@ -131,6 +139,8 @@ public class AdManager extends BaseAdminSecurityController {
      * @apiParam {String} dimension　尺寸
      * @apiParam {long} price　价格
      * @apiParam {int} days　计价天数
+     * @apiParam　{int} sourceType　客户端类型 1PC 2H5
+     * @apiParam　{int} pageType　页面类型
      * @apiParam {String} display 展示商家数
      * @apiSuccess (Success 200) {int} code 200 请求成功
      * @apiSuccess (Error 40001) {int} code 40001 参数错误
@@ -157,6 +167,8 @@ public class AdManager extends BaseAdminSecurityController {
             if (requestNode.has("days")) ad.setDays(param.days);
             if (requestNode.has("status")) ad.setStatus(param.status);
             if (requestNode.has("display")) ad.setDisplay(param.display);
+            if (requestNode.has("sourceType")) ad.setSourceType(param.sourceType);
+            if (requestNode.has("pageType")) ad.setPageType(param.pageType);
             long currentTime = dateUtils.getCurrentTimeBySecond();
             ad.setUpdateTime(currentTime);
             ad.save();
@@ -185,7 +197,8 @@ public class AdManager extends BaseAdminSecurityController {
             AdminMember admin = adminOptional.get();
             if (null == admin) return unauth403();
             String operation = jsonNode.findPath("operation").asText();
-            if (ValidationUtil.isEmpty(operation) || !operation.equals("del")) return okCustomJson(CODE40001, "参数错误");
+            if (ValidationUtil.isEmpty(operation) || !operation.equals("del"))
+                return okCustomJson(CODE40001, "参数错误");
             long id = jsonNode.findPath("id").asLong();
             Ad ad = Ad.find.byId(id);
             if (null == ad) return okCustomJson(CODE40002, "广告不存在");

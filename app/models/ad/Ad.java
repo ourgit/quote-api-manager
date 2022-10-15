@@ -43,6 +43,11 @@ public class Ad extends Model {
     @JsonDeserialize(using = EscapeHtmlAuthoritySerializer.class)
     public String display;
 
+    @Column(name = "source_type")
+    public int sourceType;
+
+    @Column(name = "page_type")
+    public int pageType;
 
     @Column(name = "update_time")
     public long updateTime;
@@ -125,5 +130,21 @@ public class Ad extends Model {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(int sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public int getPageType() {
+        return pageType;
+    }
+
+    public void setPageType(int pageType) {
+        this.pageType = pageType;
     }
 }
