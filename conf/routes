@@ -92,12 +92,12 @@ POST        /v1/cp/articles/new/                                  controllers.ar
 POST        /v1/cp/articles/:id/                                  controllers.article.ArticleManager.updateArticle(request: Request,id:Long)
 POST        /v1/cp/article/                                       controllers.article.ArticleManager.delArticle(request: Request)
 
-GET         /v1/cp/article_categories/                            controllers.article.ArticleManager.listCategories(page:Int?=1, categoryName:String?="")
+GET         /v1/cp/article_categories/                            controllers.article.ArticleManager.listArticleCategories(page:Int?=1, categoryName:String?="")
 GET         /v1/cp/article_all_categories/                        controllers.article.ArticleManager.listAllCategories
-GET         /v1/cp/article_categories/:categoryId/                controllers.article.ArticleManager.getCategory(categoryId:Int)
-POST        /v1/cp/article_categories/new/                        controllers.article.ArticleManager.addCategory(request: Request)
-POST        /v1/cp/article_categories/:categoryId/                controllers.article.ArticleManager.updateCategory(request: Request,categoryId:Int)
-POST        /v1/cp/article_categories/                            controllers.article.ArticleManager.delCategory(request: Request)
+GET         /v1/cp/article_categories/:categoryId/                controllers.article.ArticleManager.getArticleCategory(categoryId:Int)
+POST        /v1/cp/article_categories/new/                        controllers.article.ArticleManager.addArticleCategory(request: Request)
+POST        /v1/cp/article_categories/:categoryId/                controllers.article.ArticleManager.updateArticleCategory(request: Request,categoryId:Int)
+POST        /v1/cp/article_categories/                            controllers.article.ArticleManager.delArticleCategory(request: Request)
 POST        /v1/cp/push_msg/                                      controllers.article.ArticleManager.pushMsg(request: Request)
 
 GET         /v1/cp/carousels/                                     controllers.basic.SystemConfigManager.listCarousel(page:Int?=1,filter:String?="",queryType:Int?=0,bizType:Int?=0)

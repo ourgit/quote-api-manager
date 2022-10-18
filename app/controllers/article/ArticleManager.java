@@ -297,7 +297,7 @@ public class ArticleManager extends BaseAdminSecurityController {
      * @apiSuccess (Success 200){long} updateTime 更新时间
      * @apiSuccess (Success 200){long} createdTime 创建时间
      */
-    public CompletionStage<Result> listCategories(int page, String categoryName) {
+    public CompletionStage<Result> listArticleCategories(int page, String categoryName) {
         return CompletableFuture.supplyAsync(() -> {
             ExpressionList<ArticleCategory> expressionList = ArticleCategory.find.query().where();
             if (!ValidationUtil.isEmpty(categoryName)) expressionList.icontains("name", categoryName);
@@ -328,7 +328,7 @@ public class ArticleManager extends BaseAdminSecurityController {
      * @apiSuccess (Error 40001) {int} code 40001 参数错误
      * @apiSuccess (Error 40002) {int} code 40002 分类不存在
      */
-    public CompletionStage<Result> getCategory(int categoryId) {
+    public CompletionStage<Result> getArticleCategory(int categoryId) {
         return CompletableFuture.supplyAsync(() -> {
             if (categoryId < 1) return okCustomJson(CODE40001, "参数错误");
             ArticleCategory category = ArticleCategory.find.byId(categoryId);
@@ -340,7 +340,7 @@ public class ArticleManager extends BaseAdminSecurityController {
     }
 
     /**
-     * @api {POST} /v1/cp/article_categories/new/ 08添加分类
+     * @api {POST} /v1/cp/article_categories/new/ 08添加文章分类
      * @apiName addCategory
      * @apiGroup ADMIN-ARTICLE
      * @apiParam {int} sort 排序
@@ -353,7 +353,7 @@ public class ArticleManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> addCategory(Http.Request request) {
+    public CompletionStage<Result> addArticleCategory(Http.Request request) {
         JsonNode requestNode = request.body().asJson();
         return CompletableFuture.supplyAsync(() -> {
             if (null == requestNode) return okCustomJson(CODE40001, "参数错误");
@@ -376,7 +376,7 @@ public class ArticleManager extends BaseAdminSecurityController {
     }
 
     /**
-     * @api {POST} /v1/cp/article_categories/:categoryId/ 09更新分类
+     * @api {POST} /v1/cp/article_categories/:categoryId/ 09更新文章分类
      * @apiName updateCategory
      * @apiGroup ADMIN-ARTICLE
      * @apiParam {int} sort 排序
@@ -390,7 +390,7 @@ public class ArticleManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> updateCategory(Http.Request request, int categoryId) {
+    public CompletionStage<Result> updateArticleCategory(Http.Request request, int categoryId) {
         JsonNode requestNode = request.body().asJson();
         return CompletableFuture.supplyAsync(() -> {
             if (null == requestNode || categoryId < 1) return okCustomJson(CODE40001, "参数错误");
@@ -428,7 +428,7 @@ public class ArticleManager extends BaseAdminSecurityController {
     }
 
     /**
-     * @api {POST} /v1/cp/article_categories/ 10删除分类
+     * @api {POST} /v1/cp/article_categories/ 10删除文章分类
      * @apiName delCategory
      * @apiGroup ADMIN-ARTICLE
      * @apiParam {int} categoryId 分类id
@@ -439,7 +439,7 @@ public class ArticleManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> delCategory(Http.Request request) {
+    public CompletionStage<Result> delArticleCategory(Http.Request request) {
         JsonNode jsonNode = request.body().asJson();
         return CompletableFuture.supplyAsync(() -> {
             String operation = jsonNode.findPath("operation").asText();
