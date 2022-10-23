@@ -218,6 +218,9 @@ POST        /v1/cp/membership/new/                                controllers.me
 POST        /v1/cp/membership/:id/                                controllers.member.MembershipManager.updateMembership(request: Request,id:Long)
 POST        /v1/cp/membership/                                    controllers.member.MembershipManager.deleteMembership(request: Request)
 
+POST        /v1/cp/bid/bid_list/                                  controllers.bid.BidManager.listBid(request: Request)
+GET         /v1/cp/bid/bid_list/:id/                              controllers.bid.BidManager.getBid(request: Request,id:Long)
+POST        /v1/cp/bid/:id/                                       controllers.bid.BidManager.updateBid(request: Request,id:Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /*file                                                controllers.Assets.versioned(path="/public", file: Asset)
