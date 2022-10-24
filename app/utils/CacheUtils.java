@@ -178,7 +178,6 @@ public class CacheUtils {
     }
 
 
-
     public String getMemberTokenKey(int deviceType, long uid) {
         return RedisKeyConstant.KEY_MEMBER_TOKEN_KEY + deviceType + ":" + uid;
     }
@@ -239,9 +238,7 @@ public class CacheUtils {
         logger.info("updateParamConfigCache");
         List<ParamConfig> list = ParamConfig.find.query().where().orderBy().desc("id").findList();
         list.forEach((config) -> {
-            if (config.isEncrypt) {
-                redis.set(config.key, encodeUtils.decrypt(config.value));
-            } else redis.set(config.key, config.value);
+            redis.remove(config.key);
         });
     }
 

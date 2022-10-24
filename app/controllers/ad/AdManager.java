@@ -97,8 +97,8 @@ public class AdManager extends BaseAdminSecurityController {
      * @apiParam {String} dimension　尺寸
      * @apiParam {long} price　价格
      * @apiParam {int} days　计价天数
-     * @apiParam　{int} sourceType　客户端类型 1PC 2H5
-     * @apiParam　{int} pageType　页面类型
+     * @apiParam {int} sourceType　客户端类型 1PC 2H5
+     * @apiParam {int} pageType　页面类型
      * @apiParam {String} display 展示商家数
      * @apiSuccess (Success 200) {int} code 200 请求成功
      * @apiSuccess (Error 40001) {int} code 40001 参数错误
