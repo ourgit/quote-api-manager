@@ -7,7 +7,7 @@ import controllers.BaseAdminSecurityController;
 import io.ebean.ExpressionList;
 import io.ebean.PagedList;
 import models.admin.AdminMember;
-import models.user.MHImage;
+import models.user.Image;
 import play.db.ebean.Transactional;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -21,26 +21,26 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 
-public class MhImageManager extends BaseAdminSecurityController {
+public class ImageManager extends BaseAdminSecurityController {
     /**
-     * @api {GET} /v1/cp/mh_images/?page= 01MH图片列表
-     * @apiName listMHImages
-     * @apiGroup ADMIN-MH-IMAGE
+     * @api {GET} /v1/cp/images/?page= 01图片列表
+     * @apiName listImages
+     * @apiGroup ADMIN-IMAGE
      * @apiSuccess (Success 200){int} code 200
      * @apiSuccess (Success 200){int} pages 页码
      * @apiSuccess (Success 200){JsonArray} list 订单列表
      * @apiSuccess (Success 200){String} image image
      * @apiSuccess (Success 200){String} createTime 上传时间
      */
-    public CompletionStage<Result> listMHImages(int page) {
+    public CompletionStage<Result> listImages(int page) {
         return CompletableFuture.supplyAsync(() -> {
-            ExpressionList<MHImage> expressionList = MHImage.find.query().where();
-            PagedList<MHImage> pagedList = expressionList.orderBy().desc("id")
+            ExpressionList<Image> expressionList = Image.find.query().where();
+            PagedList<Image> pagedList = expressionList.orderBy().desc("id")
                     .setFirstRow((page - 1) * BusinessConstant.PAGE_SIZE_20)
                     .setMaxRows(BusinessConstant.PAGE_SIZE_20)
                     .findPagedList();
             int pages = pagedList.getTotalPageCount();
-            List<MHImage> list = pagedList.getList();
+            List<Image> list = pagedList.getList();
             ObjectNode result = Json.newObject();
             result.put("pages", pages);
             result.put(CODE, CODE200);
@@ -50,9 +50,9 @@ public class MhImageManager extends BaseAdminSecurityController {
     }
 
     /**
-     * @api {POST} /v1/cp/mh_images/new/ 02添加MH图片
-     * @apiName addMHImages
-     * @apiGroup ADMIN-MH-IMAGE
+     * @api {POST} /v1/cp/images/new/ 02添加图片
+     * @apiName addImages
+     * @apiGroup ADMIN-IMAGE
      * @apiParam {long} productId 商品id
      * @apiParam {JsonArray} imgList 图片列表
      * @apiParam {string} imgUrl 图片链接地址
@@ -63,7 +63,7 @@ public class MhImageManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> addMHImages(Http.Request request) {
+    public CompletionStage<Result> addImages(Http.Request request) {
         JsonNode requestNode = request.body().asJson();
         Optional<AdminMember> optional = businessUtils.getAdminByAuthToken(request);
         return CompletableFuture.supplyAsync(() -> {
@@ -72,7 +72,7 @@ public class MhImageManager extends BaseAdminSecurityController {
             if (null == member) return unauth403();
             if (null == requestNode) return okCustomJson(CODE40001, "参数错误");
             String image = requestNode.findPath("image").asText();
-            MHImage mhImage = new MHImage();
+            Image mhImage = new Image();
             mhImage.setImage(image);
             mhImage.setCreateTime(dateUtils.getCurrentTimeBySecond());
             mhImage.save();
@@ -82,9 +82,9 @@ public class MhImageManager extends BaseAdminSecurityController {
 
 
     /**
-     * @api {POST} /v1/cp/mh_images/:imageId/ 02修改MH图片
-     * @apiName updateMHImage
-     * @apiGroup ADMIN-MH-IMAGE
+     * @api {POST} /v1/cp/images/:imageId/ 02修改图片
+     * @apiName updateImage
+     * @apiGroup ADMIN-IMAGE
      * @apiParam {string} image 图片链接地址
      * @apiSuccess (Success 200){int} code 200
      * @apiSuccess (Error 40001){int} code 40001 参数错误
@@ -92,11 +92,11 @@ public class MhImageManager extends BaseAdminSecurityController {
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> updateMHImage(Http.Request request, long imageId) {
+    public CompletionStage<Result> updateImage(Http.Request request, long imageId) {
         JsonNode requestNode = request.body().asJson();
         return CompletableFuture.supplyAsync(() -> {
             if (null == requestNode || imageId < 1) return okCustomJson(CODE40001, "参数错误");
-            MHImage image = MHImage.find.byId(imageId);
+            Image image = Image.find.byId(imageId);
             if (null == image) return okCustomJson(CODE40002, "图片不存在");
             String imgUrl = requestNode.findPath("image").asText();
             image.setImage(imgUrl);
@@ -106,21 +106,21 @@ public class MhImageManager extends BaseAdminSecurityController {
     }
 
     /**
-     * @api {POST} /v1/cp/mh_images/ 03删除MH图片
-     * @apiName deleteMHImages
-     * @apiGroup ADMIN-MH-IMAGE
+     * @api {POST} /v1/cp/images/ 03删除图片
+     * @apiName deleteImages
+     * @apiGroup ADMIN-IMAGE
      * @apiParam {int} imageId 图片id
      * @apiParam {String} operation 操作,"del"为删除
      */
     @BodyParser.Of(BodyParser.Json.class)
     @Transactional
-    public CompletionStage<Result> deleteMHImages(Http.Request request) {
+    public CompletionStage<Result> deleteImages(Http.Request request) {
         JsonNode jsonNode = request.body().asJson();
         return CompletableFuture.supplyAsync(() -> {
             String operation = jsonNode.findPath("operation").asText();
             if (ValidationUtil.isEmpty(operation) || !operation.equals("del")) return okCustomJson(CODE40001, "参数错误");
             long imageId = jsonNode.findPath("imageId").asLong();
-            MHImage image = MHImage.find.byId(imageId);
+            Image image = Image.find.byId(imageId);
             if (null == image) return okCustomJson(CODE40002, "图片不存在");
             image.delete();
             return okJSON200();

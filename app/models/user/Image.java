@@ -9,8 +9,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "v1_mh_image")
-public class MHImage extends Model implements Serializable {
+@Table(name = "v1_image")
+public class Image extends Model implements Serializable {
 
 
     @Column(name = "id")
@@ -25,7 +25,7 @@ public class MHImage extends Model implements Serializable {
     @Column(name = "create_time")
     public long createTime;
 
-    public static Finder<Long, MHImage> find = new Finder<>(MHImage.class);
+    public static Finder<Long, Image> find = new Finder<>(Image.class);
 
     public long getId() {
         return id;
