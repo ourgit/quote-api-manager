@@ -115,6 +115,7 @@ public class CategoryManager extends BaseAdminSecurityController {
             int cateType = requestNode.findPath("cateType").asInt();
             String imgUrl = requestNode.findPath("imgUrl").asText();
             String poster = requestNode.findPath("poster").asText();
+            String tag = requestNode.findPath("tag").asText();
             String seoKeyword = requestNode.findPath("seoKeyword").asText();
             String seoDescription = requestNode.findPath("seoDescription").asText();
             if (ValidationUtil.isEmpty(name)) return okCustomJson(CODE40001, "参数错误");
@@ -124,27 +125,28 @@ public class CategoryManager extends BaseAdminSecurityController {
                 if (null == parentMerchantCategory) return okCustomJson(CODE40001, "父类ID不存在");
             }
             if (show < 1) show = 1;
-            Category Category = new Category();
-            Category.setName(name);
-            Category.setPinyinAbbr(pinyin4j.toPinYinUppercase(name));
-            Category.setShow(show);
-            Category.setSort(sort);
-            Category.setCateType(cateType);
-            Category.setParentId(parentId);
-            Category.setSeoKeyword(seoKeyword);
-            Category.setSeoDescription(seoDescription);
-            Category.setPoster(poster);
+            Category category = new Category();
+            category.setName(name);
+            category.setPinyinAbbr(pinyin4j.toPinYinUppercase(name));
+            category.setShow(show);
+            category.setSort(sort);
+            category.setCateType(cateType);
+            category.setParentId(parentId);
+            category.setSeoKeyword(seoKeyword);
+            category.setSeoDescription(seoDescription);
+            category.setTag(tag);
+            category.setPoster(poster);
             if (null != parentMerchantCategory) {
                 String parentPath = parentMerchantCategory.path;
                 if (ValidationUtil.isEmpty(parentPath)) parentPath = "/";
-                Category.setPath(parentPath + parentMerchantCategory.id + "/");
-            } else Category.setPath("/");
+                category.setPath(parentPath + parentMerchantCategory.id + "/");
+            } else category.setPath("/");
 
             long currentTime = dateUtils.getCurrentTimeBySecond();
-            Category.setCreateTime(currentTime);
-            if (!ValidationUtil.isEmpty(imgUrl)) Category.setImgUrl(imgUrl);
-            Category.setPathName(getPathName(Category.path));
-            Category.save();
+            category.setCreateTime(currentTime);
+            if (!ValidationUtil.isEmpty(imgUrl)) category.setImgUrl(imgUrl);
+            category.setPathName(getPathName(category.path));
+            category.save();
             updateCategoryCache();
             return okJSON200();
         });
@@ -195,6 +197,7 @@ public class CategoryManager extends BaseAdminSecurityController {
             long parentId = requestNode.findPath("parentId").asLong();
             if (categoryId == parentId) return okCustomJson(CODE40002, "子分类不能跟父分类一样");
             String name = requestNode.findPath("name").asText();
+            String tag = requestNode.findPath("tag").asText();
             int cateType = requestNode.findPath("cateType").asInt();
 
             int show = requestNode.findPath("show").asInt();
@@ -224,6 +227,9 @@ public class CategoryManager extends BaseAdminSecurityController {
             if (!ValidationUtil.isEmpty(seoKeyword)) category.setSeoKeyword(seoKeyword);
             if (!ValidationUtil.isEmpty(seoDescription)) category.setSeoDescription(seoDescription);
             if (cateType > 0) category.setCateType(cateType);
+            if (requestNode.has("tag")) {
+                category.setTag(tag);
+            }
             category.setPathName(getPathName(category.path));
             category.save();
             updateCategoryCache();

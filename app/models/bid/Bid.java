@@ -71,7 +71,7 @@ public class Bid extends Model {
     public long price;
 
     @Column(name = "category_id")
-    public long categoryId;
+    public String categoryId;
 
     @Column(name = "contact_phone_number")
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
@@ -98,7 +98,7 @@ public class Bid extends Model {
 
     @Transient
     public List<BidDetail> detailList = new ArrayList<>();
-    
+
     public static Finder<Long, Bid> find = new Finder<>(Bid.class);
 
     public long getId() {
@@ -229,11 +229,11 @@ public class Bid extends Model {
         this.createTime = createTime;
     }
 
-    public long getCategoryId() {
+    public String getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(long categoryId) {
+    public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
 

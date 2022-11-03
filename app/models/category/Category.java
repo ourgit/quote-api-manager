@@ -60,6 +60,10 @@ public class Category extends Model {
     @JsonDeserialize(using = EscapeHtmlSerializer.class)
     public String seoDescription;
 
+    @Column(name = "tag")
+    @JsonDeserialize(using = EscapeHtmlSerializer.class)
+    public String tag;
+
     @Column(name = "is_shown")
     public int show;
 
@@ -217,5 +221,13 @@ public class Category extends Model {
 
     public void setSeoDescription(String seoDescription) {
         this.seoDescription = seoDescription;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }
