@@ -237,7 +237,7 @@ public class ShopManager extends BaseAdminController {
                 shop.setContactName(log.userName);
                 shop.setContactAddress(log.address);
                 shop.setDescription("");
-                shop.setBusinessTime(log.businessItems);
+                shop.setBusinessTime("");
                 shop.setApproveNote("");
                 shop.setRectLogo(log.logo);
                 shop.setAvatar(log.logo);
